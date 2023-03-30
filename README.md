@@ -45,6 +45,12 @@ $ yarn run start:dev
 $ yarn run start:prod
 ```
 
+## Comments guidelines
+
+```bash
+[Commit Message Format](https://github.com/angular/angular/blob/main/CONTRIBUTING.md#-commit-message-format) 
+```
+
 ## Test
 
 ```bash
