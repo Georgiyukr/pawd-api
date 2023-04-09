@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
+import { CreateUser } from "../types";
 
 @Injectable()
-export class AuthService {}
+export class AuthService {
+    async register(data: CreateUser): Promise<any> {
+        return data;
+    }
+}
