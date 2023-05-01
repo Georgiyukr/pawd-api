@@ -24,7 +24,7 @@ export class RegisterUserDTO {
     @IsString()
     @MinLength(8)
     @MaxLength(100)
-    email: string;
+    email: Lowercase<string>;
 
     @IsNotEmpty()
     @IsString()

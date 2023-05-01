@@ -5,6 +5,7 @@ import { AuthService } from "../../domain/auth/auth.service";
 @Controller("auth")
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
+
     @Post("/register")
     async register(
         @Body(new ValidationPipe()) registerUserDto: RegisterUserDTO
