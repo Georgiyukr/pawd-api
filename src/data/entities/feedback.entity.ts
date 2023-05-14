@@ -1,7 +1,7 @@
 import { Session } from "./index";
 
 export class Feedback {
-    sessionId: Session;
+    session: Session;
     rating: string;
     question1?: string;
     question2?: string;

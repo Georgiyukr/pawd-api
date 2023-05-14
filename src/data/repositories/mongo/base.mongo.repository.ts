@@ -6,11 +6,9 @@ interface BaseMongoRepositoryInterface<T> extends BaseRepositoryInterface<T> {
     getByCondition(filterCondition: any): Promise<T>;
 }
 
-export abstract class BaseMongoRepository<T>
-    implements BaseMongoRepositoryInterface<T>
-{
+export class BaseMongoRepository<T> implements BaseMongoRepositoryInterface<T> {
     private entity: Model<T>;
-    protected constructor(entity: Model<T>) {
+    constructor(entity: Model<T>) {
         this.entity = entity;
     }
 

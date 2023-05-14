@@ -3,6 +3,7 @@ import { ApiModule } from "./api/api.module";
 import { DomainModule } from "./domain/domain.module";
 import { MongooseModule } from "@nestjs/mongoose";
 import { ConfigModule } from "@nestjs/config";
+import { DataServicesModule } from "./data/data-services.module";
 
 @Module({
     imports: [
@@ -13,6 +14,7 @@ import { ConfigModule } from "@nestjs/config";
         ),
         ApiModule,
         DomainModule,
+        DataServicesModule,
     ],
 })
 export class AppModule {}
