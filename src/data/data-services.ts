@@ -1,6 +1,8 @@
-import { Feedback, Location, Session, User } from "./entities";
-import { BaseRepository } from "./repositories/base.repository";
+import { Feedback, Location, Session, User } from "../sharable/entities";
+import { BaseRepository } from "./base.repository";
+import { Injectable } from "@nestjs/common";
 
+@Injectable()
 export abstract class DataServices {
     abstract users: BaseRepository<User>;
     abstract locations: BaseRepository<Location>;
