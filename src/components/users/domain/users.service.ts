@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { CreateUser, NewUser } from "../../../sharable/types";
 import { User, UserBuilder } from "../../../sharable/entities";
 import { UsersRepository } from "../data/users.repository";
-import { HashService } from "src/utils/hash.service";
+import { HashService } from "../../../utils/hash.service";
 
 @Injectable()
 export class UsersService {
