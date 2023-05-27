@@ -2,10 +2,14 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { CreateUser, NewUser } from "../../../sharable/types";
 import { User, UserBuilder } from "../../../sharable/entities";
 import { UsersRepository } from "../data/users.repository";
+import { HashService } from "src/utils/hash.service";
 
 @Injectable()
 export class UsersService {
-    constructor(private usersRepository: UsersRepository) {}
+    constructor(
+        private usersRepository: UsersRepository,
+        private hashService: HashService
+    ) {}
     async createUser(data: CreateUser): Promise<any> {
         const userExists: boolean = await this.checkIfUserExistsByEmail(
             data.email
@@ -15,12 +19,12 @@ export class UsersService {
                 `User with email ${data.email} already exists.`,
                 HttpStatus.CONFLICT
             );
-        // hash password
+        const hashedPassword = await this.hashService.makeHash(data.password);
+        data.password = hashedPassword;
+
         // create stripe customer
         let paymentCustomerId = "stripe_id_123";
-        // build user object
         let user: User = this.buildNewUser({ ...data, paymentCustomerId });
-        // create user model and save in Mongo
         user = await this.usersRepository.createUser(user);
 
         return user;
