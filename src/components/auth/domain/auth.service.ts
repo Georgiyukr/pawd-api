@@ -2,58 +2,47 @@ import { Injectable } from "@nestjs/common";
 import { UsersService } from "../../users/domain/users.service";
 import { CreateUser } from "../../../sharable/types";
 import { User } from "../../../sharable/entities";
-import { JwtService } from "@nestjs/jwt";
-import { Config } from "../../../utils/config";
+import { JwtSignOptions } from "@nestjs/jwt";
 import { AccessTokenPayload } from "./types";
+import { HashService } from "src/utils/hash.service";
+import { JwtService } from "./jwt.service";
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly userService: UsersService,
         private readonly jwtService: JwtService,
-        private readonly config: Config
+        private readonly hashService: HashService
     ) {}
 
     async register(data: CreateUser): Promise<any> {
         let user: User = await this.userService.createUser(data);
-        let tokenPayload: AccessTokenPayload = this.formatTokenPayload(user);
-        const accessToken: string = await this.generateToken(
-            tokenPayload,
-            this.config.accessTokenSecret,
-            this.config.accessTokenExpiration
+        const accessTokenPayload: AccessTokenPayload =
+            this.jwtService.formatAccessTokenPayload(user.id);
+        const accessTokenOptions: JwtSignOptions =
+            this.jwtService.formatAccessTokenOptions(user.id);
+        // console.log("Access Token Options: ", accessTokenOptions);
+        const accessToken: string = await this.jwtService.generateToken(
+            accessTokenPayload,
+            accessTokenOptions
         );
-        const refreshToken: string = await this.generateToken(
-            {},
-            this.config.refreshTokenSecret,
-            this.config.refreshTokenExpiration
-        );
+        // console.log("Access Token", accessToken);
+        // const refreshToken: string = await this.generateToken(
+        //     {},
+        //     this.config.refreshTokenSecret,
+        //     this.config.refreshTokenExpiration
+        // );
+        // const refreshTokenHash: string = await this.hashService.makeHash(
+        //     refreshToken
+        // );
+        // user = await this.userService.updateUser(
+        //     { email: user.email },
+        //     { refreshToken: refreshTokenHash }
+        // );
 
-        return user;
-    }
-
-    formatTokenPayload(user: User): AccessTokenPayload {
         return {
-            id: user.id,
-            email: user.email,
-            dogName: user.dogName,
-            firstName: user.firstName,
-            lastName: user.lastName,
+            user,
+            accessToken,
         };
-    }
-
-    async generateToken(
-        payload,
-        secret: string,
-        expiresIn: string
-    ): Promise<string> {
-        console.log("Payload", payload);
-        return await this.jwtService.signAsync(payload, { secret, expiresIn });
-    }
-
-    async generateAccessToken(payload): Promise<string> {
-        return await this.jwtService.signAsync(payload, {
-            secret: this.config.accessTokenSecret,
-            expiresIn: this.config.accessTokenExpiration,
-        });
     }
 }

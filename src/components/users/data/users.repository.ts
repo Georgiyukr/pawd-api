@@ -10,6 +10,10 @@ export class UsersRepository {
         return await this.dataServices.users.create(user);
     }
 
+    async updateUser(filter, update): Promise<User> {
+        return await this.dataServices.users.update(filter, update);
+    }
+
     async getUserById(id: string, options = undefined): Promise<User> {
         return await this.dataServices.users.getById(id, options);
     }

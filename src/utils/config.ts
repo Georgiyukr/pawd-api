@@ -1,19 +1,30 @@
 import { Injectable } from "@nestjs/common";
+import { Algorithm } from "jsonwebtoken";
 
 @Injectable()
 export class Config {
-    accessTokenSecret: string;
+    jwtAlgorithm: Algorithm;
+    jwtAudience: string;
+    jwtIssuer: string;
+    accessTokenPrivateKey: string;
+    accessTokenPublicKey: string;
     accessTokenExpiration: string;
-    refreshTokenSecret: string;
+    refreshTokenPrivateKey: string;
+    refreshTokenPublicKey: string;
     refreshTokenExpiration: string;
     mongoUsername: string;
     mongoPassword: string;
     mongoDatabaseName: string;
 
     constructor() {
-        this.accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
+        this.jwtAlgorithm = process.env.ALGORITHM as Algorithm;
+        this.jwtAudience = process.env.AUDIENCE;
+        this.jwtIssuer = process.env.ISSUER;
+        this.accessTokenPrivateKey = process.env.ACCESS_TOKEN_PRIVATE_KEY;
+        this.accessTokenPublicKey = process.env.ACCESS_TOKEN_PUBLIC_KEY;
         this.accessTokenExpiration = process.env.ACCESS_TOKEN_EXPIRATION;
-        this.refreshTokenSecret = process.env.REFRESH_TOKEN_SECRET;
+        this.refreshTokenPrivateKey = process.env.REFRESH_TOKEN_PRIVATE_KEY;
+        this.refreshTokenPublicKey = process.env.REFRESH_TOKEN_PUBLIC_KEY;
         this.refreshTokenExpiration = process.env.REFRESH_TOKEN_EXPIRATION;
         this.mongoUsername = process.env.MONGO_USERNAME;
         this.mongoPassword = process.env.MONGO_PASSWORD;

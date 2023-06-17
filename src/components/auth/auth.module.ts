@@ -4,15 +4,12 @@ import { AuthService } from "./domain/auth.service";
 import { UsersModule } from "../users/users.module";
 import { JwtModule } from "@nestjs/jwt";
 import { UtilsModule } from "src/utils/utils.module";
+import { JwtService } from "./domain/jwt.service";
 
 @Module({
-    imports: [
-        UsersModule,
-        JwtModule.registerAsync({ useFactory: async () => ({}) }),
-        UtilsModule,
-    ],
+    imports: [UsersModule, JwtModule.register({}), UtilsModule],
     exports: [AuthService],
-    providers: [AuthService, UtilsModule],
+    providers: [AuthService, UtilsModule, JwtService],
     controllers: [AuthController],
 })
 export class AuthModule {}

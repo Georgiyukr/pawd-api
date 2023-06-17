@@ -5,5 +5,6 @@ export abstract class BaseRepository<T> implements BaseRepositoryInterface<T> {
     abstract getById(id: string, ...rest): Promise<T>;
     abstract getByCondition(filterCondition: any): Promise<T>;
     abstract create(data: T): Promise<T>;
+    abstract update(filter: T, update: T): Promise<T>;
     abstract delete(data: T): Promise<T | null | unknown>;
 }

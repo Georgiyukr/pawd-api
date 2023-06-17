@@ -30,6 +30,10 @@ export class UsersService {
         return user;
     }
 
+    async updateUser(filter, data): Promise<User> {
+        return await this.usersRepository.updateUser(filter, data);
+    }
+
     async checkIfUserExistsByEmail(email): Promise<boolean> {
         let user: User = await this.usersRepository.getUserByEmail(email);
 
