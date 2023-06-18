@@ -14,7 +14,7 @@ export class JwtService {
         return { userId };
     }
 
-    formatAccessTokenOptions(userId: string): JwtSignOptions {
+    formatRefreshTokenOptions(userId: string): JwtSignOptions {
         return {
             subject: userId,
             algorithm: this.config.jwtAlgorithm,
@@ -25,7 +25,7 @@ export class JwtService {
         };
     }
 
-    generateToken(payload, options: JwtSignOptions): string {
-        return this.jwtService.sign(payload, options);
+    async generateToken(payload): Promise<string> {
+        return await this.jwtService.signAsync(payload);
     }
 }

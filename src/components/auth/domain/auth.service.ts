@@ -19,17 +19,11 @@ export class AuthService {
         let user: User = await this.userService.createUser(data);
         const accessTokenPayload: AccessTokenPayload =
             this.jwtService.formatAccessTokenPayload(user.id);
-        const accessTokenOptions: JwtSignOptions =
-            this.jwtService.formatAccessTokenOptions(user.id);
-        // console.log("Access Token Options: ", accessTokenOptions);
         const accessToken: string = await this.jwtService.generateToken(
-            accessTokenPayload,
-            accessTokenOptions
+            accessTokenPayload
         );
-        // console.log("Access Token", accessToken);
         // const refreshToken: string = await this.generateToken(
         //     {},
-        //     this.config.refreshTokenSecret,
         //     this.config.refreshTokenExpiration
         // );
         // const refreshTokenHash: string = await this.hashService.makeHash(
