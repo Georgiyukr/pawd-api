@@ -2,10 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { UsersService } from "../../users/domain/users.service";
 import { CreateUser } from "../../../sharable/types";
 import { User } from "../../../sharable/entities";
-import { JwtSignOptions } from "@nestjs/jwt";
 import { AccessTokenPayload } from "./types";
 import { HashService } from "src/utils/hash.service";
-import { JwtService } from "./jwt.service";
+import { JwtService } from "../../jwt/jwt.service";
 
 @Injectable()
 export class AuthService {
@@ -19,20 +18,23 @@ export class AuthService {
         let user: User = await this.userService.createUser(data);
         const accessTokenPayload: AccessTokenPayload =
             this.jwtService.formatAccessTokenPayload(user.id);
-        const accessToken: string = await this.jwtService.generateToken(
+        const refreshTokenPayload = this.jwtService.formatRefreshTokenPayload();
+        const accessToken: string = await this.jwtService.generateAccessToken(
             accessTokenPayload
         );
-        // const refreshToken: string = await this.generateToken(
-        //     {},
-        //     this.config.refreshTokenExpiration
-        // );
-        // const refreshTokenHash: string = await this.hashService.makeHash(
-        //     refreshToken
-        // );
-        // user = await this.userService.updateUser(
-        //     { email: user.email },
-        //     { refreshToken: refreshTokenHash }
-        // );
+        const refreshToken: string = await this.jwtService.generateRefreshToken(
+            refreshTokenPayload
+        );
+        // console.log("Access Token: ", accessToken);
+        // console.log();
+        // console.log("Refresh Token: ", refreshToken);
+        const refreshTokenHash: string = await this.hashService.makeHash(
+            refreshToken
+        );
+        user = await this.userService.updateUser(
+            { email: user.email },
+            { refreshToken: refreshTokenHash }
+        );
 
         return {
             user,
