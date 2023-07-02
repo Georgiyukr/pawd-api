@@ -1,14 +1,16 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { CreateUser, NewUser } from "../../../sharable/types";
+import { CreateUser, NewUser, PaymentCustomer } from "../../../sharable/types";
 import { User, UserBuilder } from "../../../sharable/entities";
 import { UsersRepository } from "../data/users.repository";
 import { HashService } from "../../../utils/hash.service";
+import { PaymentsService } from "../../../components/payments/payments.service";
 
 @Injectable()
 export class UsersService {
     constructor(
         private usersRepository: UsersRepository,
-        private hashService: HashService
+        private hashService: HashService,
+        private paymentsService: PaymentsService
     ) {}
     async createUser(data: CreateUser): Promise<any> {
         const userExists: boolean = await this.checkIfUserExistsByEmail(
@@ -22,9 +24,15 @@ export class UsersService {
         const hashedPassword = await this.hashService.makeHash(data.password);
         data.password = hashedPassword;
 
-        // create stripe customer
-        let paymentCustomerId = "stripe_id_123";
-        let user: User = this.buildNewUser({ ...data, paymentCustomerId });
+        const paymentCustomer: PaymentCustomer =
+            await this.paymentsService.createCustomer({
+                email: data.email,
+                name: `${data.firstName} ${data.lastName}`,
+            });
+        let user: User = this.buildNewUser({
+            ...data,
+            paymentCustomerId: paymentCustomer.id,
+        });
         user = await this.usersRepository.createUser(user);
 
         return user;

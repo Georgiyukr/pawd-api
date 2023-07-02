@@ -1,3 +1,5 @@
+import Stripe from "stripe";
+
 export class CreateUser {
     firstName: string;
     lastName: string;
@@ -10,3 +12,6 @@ export class CreateUser {
 export class NewUser extends CreateUser {
     paymentCustomerId: string;
 }
+
+export type PaymentCustomer = Stripe.Customer;
+export type CreatePaymentCustomer = Stripe.CustomerCreateParams;

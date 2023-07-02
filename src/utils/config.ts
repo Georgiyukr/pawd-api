@@ -15,6 +15,8 @@ export class Config {
     mongoUsername: string;
     mongoPassword: string;
     mongoDatabaseName: string;
+    stripePublicKey: string;
+    stripeSecretKey: string;
 
     constructor() {
         this.jwtAlgorithm = process.env.ALGORITHM as Algorithm;
@@ -29,5 +31,7 @@ export class Config {
         this.mongoUsername = process.env.MONGO_USERNAME;
         this.mongoPassword = process.env.MONGO_PASSWORD;
         this.mongoDatabaseName = process.env.MONGO_DATABASE_NAME;
+        this.stripePublicKey = process.env.STRIPE_PUBLIC_KEY;
+        this.stripeSecretKey = process.env.STRIPE_SECRET_KEY;
     }
 }
