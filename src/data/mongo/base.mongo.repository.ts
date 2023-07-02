@@ -44,7 +44,11 @@ export class BaseMongoRepository<T> implements BaseMongoRepositoryInterface<T> {
     }
 
     async update(filter: T, update: T): Promise<T> {
-        return this.entity.findOneAndUpdate(filter, update);
+        const doc: Document = await this.entity.findOneAndUpdate(
+            filter,
+            update
+        );
+        return formatSingleResponse(doc);
     }
 
     async delete(data: T): Promise<DeleteResult> {

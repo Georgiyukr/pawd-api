@@ -5,6 +5,7 @@ export const formatSingleResponse = (response: Document) => {
     let newResponse = response.toObject();
     delete newResponse._id;
     delete newResponse.__v;
+    delete newResponse.password;
     newResponse.id = id;
 
     return newResponse;

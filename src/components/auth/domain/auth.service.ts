@@ -4,7 +4,7 @@ import { CreateUser } from "../../../sharable/types";
 import { User } from "../../../sharable/entities";
 import { AccessTokenPayload } from "./types";
 import { HashService } from "src/utils/hash.service";
-import { JwtService } from "../../jwt/jwt.service";
+import { JwtService } from "./jwt.service";
 
 @Injectable()
 export class AuthService {
@@ -25,9 +25,7 @@ export class AuthService {
         const refreshToken: string = await this.jwtService.generateRefreshToken(
             refreshTokenPayload
         );
-        // console.log("Access Token: ", accessToken);
-        // console.log();
-        // console.log("Refresh Token: ", refreshToken);
+
         const refreshTokenHash: string = await this.hashService.makeHash(
             refreshToken
         );
