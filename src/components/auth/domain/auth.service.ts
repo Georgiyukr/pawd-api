@@ -3,15 +3,17 @@ import { UsersService } from "../../users/domain/users.service";
 import { CreateUser } from "../../../sharable/types";
 import { User } from "../../../sharable/entities";
 import { AccessTokenPayload } from "./types";
-import { HashService } from "src/utils/hash.service";
+import { HashService } from "../../../utils/hash.service";
 import { JwtService } from "./jwt.service";
+import { EmailService } from "../../../utils/email/email.service";
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly userService: UsersService,
         private readonly jwtService: JwtService,
-        private readonly hashService: HashService
+        private readonly hashService: HashService,
+        private readonly emailService: EmailService
     ) {}
 
     async register(data: CreateUser): Promise<any> {
@@ -33,6 +35,7 @@ export class AuthService {
             { email: user.email },
             { refreshToken: refreshTokenHash }
         );
+        await this.emailService.sendSuccessfulRegistrationEmail(user);
 
         return {
             user,
