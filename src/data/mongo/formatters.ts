@@ -5,6 +5,16 @@ export const formatSingleResponse = (response: Document) => {
     let newResponse = response.toObject();
     delete newResponse._id;
     delete newResponse.__v;
+    newResponse.id = id;
+
+    return newResponse;
+};
+
+export const formatSingleResponseWithNoPassword = (response: Document) => {
+    const id = response._id.toString();
+    let newResponse = response.toObject();
+    delete newResponse._id;
+    delete newResponse.__v;
     delete newResponse.password;
     newResponse.id = id;
 

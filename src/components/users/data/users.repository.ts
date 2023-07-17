@@ -14,11 +14,10 @@ export class UsersRepository {
         return await this.dataServices.users.update(filter, update);
     }
 
-    async getUserById(id: string, options = undefined): Promise<User> {
-        return await this.dataServices.users.getById(id, options);
-    }
-
-    async getUserByEmail(email: Lowercase<string>): Promise<User> {
-        return await this.dataServices.users.getByCondition({ email });
+    async getUserByEmail(
+        email: Lowercase<string>,
+        options = undefined
+    ): Promise<User> {
+        return await this.dataServices.users.get({ email }, options);
     }
 }
