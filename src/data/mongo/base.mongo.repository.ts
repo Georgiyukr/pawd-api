@@ -6,9 +6,7 @@ import {
     formatSingleResponseWithNoPassword,
 } from "./formatters";
 
-interface BaseMongoRepositoryInterface<T> extends BaseRepositoryInterface<T> {
-    get(filter: any): Promise<T>;
-}
+interface BaseMongoRepositoryInterface<T> extends BaseRepositoryInterface<T> {}
 
 export class BaseMongoRepository<T> implements BaseMongoRepositoryInterface<T> {
     private entity: Model<T>;
@@ -30,6 +28,17 @@ export class BaseMongoRepository<T> implements BaseMongoRepositoryInterface<T> {
                   .populate(options.populate)
                   .select(options.select)) as Document)
             : ((await this.entity.findOne(filter)) as Document);
+        if (!doc) return null;
+        return formatSingleResponse(doc);
+    }
+
+    async getById(id: string, options?: BaseMongoQueryOptions): Promise<T> {
+        const doc: Document = options
+            ? ((await this.entity
+                  .findById(id)
+                  .populate(options.populate)
+                  .select(options.select)) as Document)
+            : ((await this.entity.findById(id)) as Document);
         if (!doc) return null;
         return formatSingleResponse(doc);
     }

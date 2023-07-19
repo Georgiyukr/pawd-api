@@ -20,4 +20,8 @@ export class UsersRepository {
     ): Promise<User> {
         return await this.dataServices.users.get({ email }, options);
     }
+
+    async getUserById(id: string, options = undefined): Promise<User> {
+        return this.dataServices.users.getById(id, options);
+    }
 }

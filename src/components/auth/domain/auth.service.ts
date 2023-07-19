@@ -73,6 +73,8 @@ export class AuthService {
         };
     }
 
+    async logout(id: string): Promise<any> {}
+
     async generateAccessAndRefreshTokens(user: User): Promise<Tokens> {
         const accessTokenPayload: AccessTokenPayload =
             this.jwtService.formatAccessTokenPayload(user.id);
