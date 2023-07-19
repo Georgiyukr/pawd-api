@@ -10,7 +10,7 @@ export class AuthController {
     @Post("/register")
     async register(
         @Body(new ValidationPipe()) registerUserDto: RegisterUserInputDTO
-    ): Promise<any> {
+    ): Promise<RegisterUserOutputDTO> {
         return await this.authService.register(registerUserDto);
     }
 

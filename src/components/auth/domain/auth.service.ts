@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { UsersService } from "../../users/domain/users.service";
 import { CreateUser, LoginUser } from "../../../sharable/types";
 import { User } from "../../../sharable/entities";
-import { AccessTokenPayload, LoggedInUser } from "./types";
+import { AccessTokenPayload, LoggedInUser, RegisteredUser } from "./types";
 import { HashService } from "../../../utils/hash.service";
 import { JwtService } from "./jwt.service";
 import { EmailService } from "../../../utils/email/email.service";
@@ -21,7 +21,7 @@ export class AuthService {
         private readonly emailService: EmailService
     ) {}
 
-    async register(data: CreateUser): Promise<any> {
+    async register(data: CreateUser): Promise<RegisteredUser> {
         let user: User = await this.userService.createUser(data);
         const { accessToken, refreshTokenHash }: Tokens =
             await this.generateAccessAndRefreshTokens(user);

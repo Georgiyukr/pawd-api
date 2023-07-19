@@ -2,7 +2,7 @@ import { Session } from "../../../../../sharable/entities";
 
 export class RegisterUserOutputDTO {
     user: {
-        id: string;
+        id?: string;
         firstName: string;
         lastName: string;
         dogName: string;
@@ -10,7 +10,7 @@ export class RegisterUserOutputDTO {
         email: string;
         sessions?: Session[];
         totalUses: number;
-        refreshToken: string;
+        refreshToken?: string;
     };
     accessToken: string;
 }
