@@ -1,15 +1,6 @@
-import { Session, User } from "../../../sharable/entities";
+import { Session } from "../../../../../sharable/entities";
 
-export interface AccessTokenPayload {
-    userId: string;
-}
-
-export interface LoggedInUser {
-    user: User;
-    accessToken: string;
-}
-
-export interface RegisteredUser {
+export class RegisterUserOutputDTO {
     user: {
         id?: string;
         firstName: string;

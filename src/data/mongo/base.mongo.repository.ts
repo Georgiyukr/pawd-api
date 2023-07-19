@@ -1,10 +1,13 @@
 import { Document, FilterQuery, Model, Query } from "mongoose";
 import { BaseRepositoryInterface } from "../base.interface.repository";
 import { BaseMongoQueryOptions, DeleteResult } from "./types";
-import { formatSingleResponse } from "./formatters";
+import {
+    formatSingleResponse,
+    formatSingleResponseWithNoPassword,
+} from "./formatters";
 
 interface BaseMongoRepositoryInterface<T> extends BaseRepositoryInterface<T> {
-    getByCondition(filterCondition: any): Promise<T>;
+    get(filter: any): Promise<T>;
 }
 
 export class BaseMongoRepository<T> implements BaseMongoRepositoryInterface<T> {
@@ -20,19 +23,13 @@ export class BaseMongoRepository<T> implements BaseMongoRepositoryInterface<T> {
             .select(options.select);
     }
 
-    async getById<T>(id, options?: BaseMongoQueryOptions): Promise<T> {
-        const doc: Document = (await this.entity
-            .findOne(id)
-            .populate(options.populate)
-            .select(options.select)) as Document;
-        if (!doc) return null;
-        return formatSingleResponse(doc);
-    }
-
-    async getByCondition(filterCondition: any): Promise<T> {
-        const doc: Document = await this.entity.findOne({
-            where: filterCondition,
-        });
+    async get(filter: any, options?: BaseMongoQueryOptions): Promise<T> {
+        const doc: Document = options
+            ? ((await this.entity
+                  .findOne(filter)
+                  .populate(options.populate)
+                  .select(options.select)) as Document)
+            : ((await this.entity.findOne(filter)) as Document);
         if (!doc) return null;
         return formatSingleResponse(doc);
     }
@@ -40,15 +37,16 @@ export class BaseMongoRepository<T> implements BaseMongoRepositoryInterface<T> {
     async create(data: T): Promise<T> {
         const model = new this.entity(data);
         const doc: Document = await model.save(data);
-        return formatSingleResponse(doc);
+        return formatSingleResponseWithNoPassword(doc);
     }
 
     async update(filter: T, update: T): Promise<T> {
         const doc: Document = await this.entity.findOneAndUpdate(
             filter,
-            update
+            update,
+            { new: true }
         );
-        return formatSingleResponse(doc);
+        return formatSingleResponseWithNoPassword(doc);
     }
 
     async delete(data: T): Promise<DeleteResult> {

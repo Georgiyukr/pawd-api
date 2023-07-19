@@ -13,10 +13,8 @@ export class UsersService {
         private paymentsService: PaymentsService
     ) {}
     async createUser(data: CreateUser): Promise<any> {
-        const userExists: boolean = await this.checkIfUserExistsByEmail(
-            data.email
-        );
-        if (userExists)
+        let user: User = await this.getUserByEmail(data.email);
+        if (user)
             throw new HttpException(
                 `User with email ${data.email} already exists.`,
                 HttpStatus.CONFLICT
@@ -29,7 +27,7 @@ export class UsersService {
                 email: data.email,
                 name: `${data.firstName} ${data.lastName}`,
             });
-        let user: User = this.buildNewUser({
+        user = this.buildNewUser({
             ...data,
             paymentCustomerId: paymentCustomer.id,
         });
@@ -38,15 +36,15 @@ export class UsersService {
         return user;
     }
 
-    async updateUser(filter, data): Promise<User> {
-        return await this.usersRepository.updateUser(filter, data);
+    async getUserByEmail(
+        email: Lowercase<string>,
+        options = undefined
+    ): Promise<User> {
+        return await this.usersRepository.getUserByEmail(email, options);
     }
 
-    async checkIfUserExistsByEmail(email): Promise<boolean> {
-        let user: User = await this.usersRepository.getUserByEmail(email);
-
-        if (!user) return false;
-        return true;
+    async updateUser(filter, data): Promise<User> {
+        return await this.usersRepository.updateUser(filter, data);
     }
 
     buildNewUser(user: NewUser): User {
