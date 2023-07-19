@@ -7,7 +7,7 @@ import {
     IsOptional,
 } from "class-validator";
 
-export class RegisterUserDTO {
+export class RegisterUserInputDTO {
     @IsNotEmpty()
     @IsString()
     firstName: string;
