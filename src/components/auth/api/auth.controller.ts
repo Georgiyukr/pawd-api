@@ -1,4 +1,4 @@
-import { Body, Controller, Post, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Param, Post, ValidationPipe } from "@nestjs/common";
 import { AuthService } from "../domain/auth.service";
 import { LoginUserInputDTO, RegisterUserInputDTO } from "./dto/inputs";
 import { LoginUserOutputDTO, RegisterUserOutputDTO } from "./dto/outputs";
@@ -19,5 +19,10 @@ export class AuthController {
         @Body(new ValidationPipe()) loginUserDto: LoginUserInputDTO
     ): Promise<LoginUserOutputDTO> {
         return await this.authService.login(loginUserDto);
+    }
+
+    @Post("/logout/:id")
+    async logout(@Param() id: string): Promise<any> {
+        return await this.authService.logout(id);
     }
 }
