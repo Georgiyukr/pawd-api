@@ -73,7 +73,22 @@ export class AuthService {
         };
     }
 
-    async logout(id: string): Promise<any> {}
+    async logout(id: string): Promise<any> {
+        let user = await this.userService.getUserById(id, {
+            select: "-sessions -password",
+        });
+        if (!user) {
+            throw new HttpException(
+                `User with id ${id} does not exist.`,
+                HttpStatus.NOT_FOUND
+            );
+        }
+
+        user = await this.userService.updateUserById(id, {
+            refreshToken: null,
+        });
+        return { message: "User is logged out." };
+    }
 
     async generateAccessAndRefreshTokens(user: User): Promise<Tokens> {
         const accessTokenPayload: AccessTokenPayload =

@@ -43,8 +43,16 @@ export class UsersService {
         return await this.usersRepository.getUserByEmail(email, options);
     }
 
+    async getUserById(id: string, options = undefined): Promise<User> {
+        return await this.usersRepository.getUserById(id, options);
+    }
+
     async updateUser(filter, data): Promise<User> {
         return await this.usersRepository.updateUser(filter, data);
+    }
+
+    async updateUserById(id: string, data): Promise<User> {
+        return await this.usersRepository.updateUserById(id, data);
     }
 
     buildNewUser(user: NewUser): User {

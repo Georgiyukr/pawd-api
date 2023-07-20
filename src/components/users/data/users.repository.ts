@@ -14,6 +14,10 @@ export class UsersRepository {
         return await this.dataServices.users.update(filter, update);
     }
 
+    async updateUserById(id, update): Promise<User> {
+        return await this.dataServices.users.updateById(id, update);
+    }
+
     async getUserByEmail(
         email: Lowercase<string>,
         options = undefined

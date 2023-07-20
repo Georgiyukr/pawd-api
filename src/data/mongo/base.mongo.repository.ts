@@ -1,4 +1,5 @@
-import { Document, FilterQuery, Model, Query } from "mongoose";
+import { Document, FilterQuery, Model } from "mongoose";
+import * as Mongoose from "mongoose";
 import { BaseRepositoryInterface } from "../base.interface.repository";
 import { BaseMongoQueryOptions, DeleteResult } from "./types";
 import {
@@ -33,9 +34,10 @@ export class BaseMongoRepository<T> implements BaseMongoRepositoryInterface<T> {
     }
 
     async getById(id: string, options?: BaseMongoQueryOptions): Promise<T> {
+        const _id = new Mongoose.Types.ObjectId(id);
         const doc: Document = options
             ? ((await this.entity
-                  .findById(id)
+                  .findById(_id)
                   .populate(options.populate)
                   .select(options.select)) as Document)
             : ((await this.entity.findById(id)) as Document);
@@ -52,6 +54,16 @@ export class BaseMongoRepository<T> implements BaseMongoRepositoryInterface<T> {
     async update(filter: T, update: T): Promise<T> {
         const doc: Document = await this.entity.findOneAndUpdate(
             filter,
+            update,
+            { new: true }
+        );
+        return formatSingleResponseWithNoPassword(doc);
+    }
+
+    async updateById(id, update: T): Promise<T> {
+        const _id = new Mongoose.Types.ObjectId(id);
+        const doc: Document = await this.entity.findOneAndUpdate(
+            { _id },
             update,
             { new: true }
         );
