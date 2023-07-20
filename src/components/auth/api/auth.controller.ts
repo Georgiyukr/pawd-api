@@ -1,7 +1,11 @@
 import { Body, Controller, Param, Post, ValidationPipe } from "@nestjs/common";
 import { AuthService } from "../domain/auth.service";
 import { LoginUserInputDTO, RegisterUserInputDTO } from "./dto/inputs";
-import { LoginUserOutputDTO, RegisterUserOutputDTO } from "./dto/outputs";
+import {
+    LoginUserOutputDTO,
+    RegisterUserOutputDTO,
+    LogoutOutputDTO,
+} from "./dto/outputs";
 
 @Controller("auth")
 export class AuthController {
@@ -22,7 +26,9 @@ export class AuthController {
     }
 
     @Post("/logout/:id")
-    async logout(@Param() id: string): Promise<any> {
+    async logout(@Param() id: string): Promise<LogoutOutputDTO> {
         return await this.authService.logout(id);
     }
+
+    async getAccessToken(): Promise<any> {}
 }
