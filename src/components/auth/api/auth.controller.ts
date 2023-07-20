@@ -1,7 +1,13 @@
 import { Body, Controller, Param, Post, ValidationPipe } from "@nestjs/common";
 import { AuthService } from "../domain/auth.service";
 import { LoginUserInputDTO, RegisterUserInputDTO } from "./dto/inputs";
-import { LoginUserOutputDTO, RegisterUserOutputDTO } from "./dto/outputs";
+import {
+    LoginUserOutputDTO,
+    LogoutOutputDTO,
+    PasswordResetTokenOutputDTO,
+    RegisterUserOutputDTO,
+} from "./dto/outputs";
+import { PasswordResetTokenInputDTO } from "./dto/inputs/passwordResetToken.dto";
 
 @Controller("auth")
 export class AuthController {
@@ -22,7 +28,17 @@ export class AuthController {
     }
 
     @Post("/logout/:id")
-    async logout(@Param() id: string): Promise<any> {
+    async logout(@Param() id: string): Promise<LogoutOutputDTO> {
         return await this.authService.logout(id);
+    }
+
+    @Post("/password/generate/reset")
+    async generatePasswordResetToken(
+        @Body(new ValidationPipe())
+        passwordResetTokenDto: PasswordResetTokenInputDTO
+    ): Promise<PasswordResetTokenOutputDTO> {
+        return await this.authService.generatePasswordResetToken(
+            passwordResetTokenDto.email
+        );
     }
 }

@@ -2,7 +2,13 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { UsersService } from "../../users/domain/users.service";
 import { CreateUser, LoginUser } from "../../../sharable/types";
 import { User } from "../../../sharable/entities";
-import { AccessTokenPayload, LoggedInUser, RegisteredUser } from "./types";
+import {
+    AccessTokenPayload,
+    LoggedInUser,
+    LogoutMessage,
+    PasswordResetToken,
+    RegisteredUser,
+} from "./types";
 import { HashService } from "../../../utils/hash.service";
 import { JwtService } from "./jwt.service";
 import { EmailService } from "../../../utils/email/email.service";
@@ -73,7 +79,7 @@ export class AuthService {
         };
     }
 
-    async logout(id: string): Promise<any> {
+    async logout(id: string): Promise<LogoutMessage> {
         let user = await this.userService.getUserById(id, {
             select: "-sessions -password",
         });
@@ -88,6 +94,29 @@ export class AuthService {
             refreshToken: null,
         });
         return { message: "User is logged out." };
+    }
+
+    async generatePasswordResetToken(
+        email: Lowercase<string>
+    ): Promise<PasswordResetToken> {
+        let user: User = await this.userService.getUserByEmail(email, {
+            select: "-password -sessions",
+        });
+        if (!user) {
+            throw new HttpException(
+                `User with email ${email} does not exist.`,
+                HttpStatus.NOT_FOUND
+            );
+        }
+        let tokenPayload: AccessTokenPayload =
+            this.jwtService.formatAccessTokenPayload(user.id);
+        let passwordResetToken: string =
+            await this.jwtService.generateAccessToken(tokenPayload);
+        user = await this.userService.updateUser(
+            { email },
+            { passwordResetToken }
+        );
+        return { passwordResetToken };
     }
 
     async generateAccessAndRefreshTokens(user: User): Promise<Tokens> {
