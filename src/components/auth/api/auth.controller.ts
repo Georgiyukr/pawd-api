@@ -1,13 +1,20 @@
-import { Body, Controller, Param, Post, ValidationPipe } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Get,
+    Param,
+    Post,
+    ValidationPipe,
+} from "@nestjs/common";
 import { AuthService } from "../domain/auth.service";
 import { LoginUserInputDTO, RegisterUserInputDTO } from "./dto/inputs";
 import {
     LoginUserOutputDTO,
-    LogoutOutputDTO,
     PasswordResetTokenOutputDTO,
     RegisterUserOutputDTO,
 } from "./dto/outputs";
-import { PasswordResetTokenInputDTO } from "./dto/inputs/passwordResetToken.dto";
+import { EmailInputDTO } from "../../../sharable/dtos/input";
+import { MessageOutputDTO } from "src/sharable/dtos/output";
 
 @Controller("auth")
 export class AuthController {
@@ -28,17 +35,27 @@ export class AuthController {
     }
 
     @Post("/logout/:id")
-    async logout(@Param() id: string): Promise<LogoutOutputDTO> {
+    async logout(@Param() id: string): Promise<MessageOutputDTO> {
         return await this.authService.logout(id);
     }
 
     @Post("/password/generate/reset")
     async generatePasswordResetToken(
         @Body(new ValidationPipe())
-        passwordResetTokenDto: PasswordResetTokenInputDTO
+        emailDTO: EmailInputDTO
     ): Promise<PasswordResetTokenOutputDTO> {
         return await this.authService.generatePasswordResetToken(
-            passwordResetTokenDto.email
+            emailDTO.email
         );
+    }
+
+    async resetPassword(): Promise<any> {}
+
+    @Post("/username/forgot")
+    async forgotUsername(
+        @Body(new ValidationPipe())
+        emailDTO: EmailInputDTO
+    ): Promise<MessageOutputDTO> {
+        return await this.authService.forgotUsername(emailDTO.email);
     }
 }

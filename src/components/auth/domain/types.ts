@@ -9,7 +9,7 @@ export interface LoggedInUser {
     accessToken: string;
 }
 
-export class LogoutMessage {
+export class Message {
     message: string;
 }
 
