@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator";
 
-export class PasswordResetTokenInputDTO {
+export class EmailInputDTO {
     @IsNotEmpty()
     @IsString()
     @MinLength(8)

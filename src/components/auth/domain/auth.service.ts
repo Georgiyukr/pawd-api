@@ -5,13 +5,14 @@ import { User } from "../../../sharable/entities";
 import {
     AccessTokenPayload,
     LoggedInUser,
-    LogoutMessage,
+    Message,
     PasswordResetToken,
     RegisteredUser,
 } from "./types";
 import { HashService } from "../../../utils/hash.service";
 import { JwtService } from "./jwt.service";
 import { EmailService } from "../../../utils/email/email.service";
+import { Messages } from "../../../sharable/constants/";
 
 interface Tokens {
     accessToken: string;
@@ -79,7 +80,7 @@ export class AuthService {
         };
     }
 
-    async logout(id: string): Promise<LogoutMessage> {
+    async logout(id: string): Promise<Message> {
         let user = await this.userService.getUserById(id, {
             select: "-sessions -password",
         });
@@ -93,7 +94,7 @@ export class AuthService {
         user = await this.userService.updateUserById(id, {
             refreshToken: null,
         });
-        return { message: "User is logged out." };
+        return { message: Messages.default.logout };
     }
 
     async generatePasswordResetToken(
@@ -134,5 +135,19 @@ export class AuthService {
             refreshToken
         );
         return { accessToken, refreshTokenHash };
+    }
+
+    async forgotUsername(email: Lowercase<string>): Promise<Message> {
+        let user: User = await this.userService.getUserByEmail(email, {
+            select: "-password -sessions",
+        });
+        if (!user) {
+            throw new HttpException(
+                `User with email ${email} does not exist.`,
+                HttpStatus.NOT_FOUND
+            );
+        }
+        await this.emailService.sendUsernameEmail(user);
+        return { message: Messages.default.forgotUsername };
     }
 }
