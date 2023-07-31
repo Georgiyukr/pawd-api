@@ -54,8 +54,8 @@ export class AuthController {
     @Post("/username/forgot")
     async forgotUsername(
         @Body(new ValidationPipe())
-        emailDTO: EmailInputDTO
+        emailDto: EmailInputDTO
     ): Promise<MessageOutputDTO> {
-        return await this.authService.forgotUsername(emailDTO.email);
+        return await this.authService.forgotUsername(emailDto.email);
     }
 }
