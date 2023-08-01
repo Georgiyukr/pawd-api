@@ -6,6 +6,7 @@ import { LocationsRepository } from "../data/locations.repository";
 @Injectable()
 export class LocationsService {
     constructor(private readonly locationsRepository: LocationsRepository) {}
+
     async createLocation(data: CreateLocation): Promise<Location> {
         let location: Location = await this.getLocationByAddress(data.address);
         if (location)
@@ -13,10 +14,33 @@ export class LocationsService {
                 `Location with address ${data.address} already exists.`,
                 HttpStatus.CONFLICT
             );
+        const locationCode = await this.getUniqueLocationCode();
+        location = this.buildLocation(data, locationCode);
         return location;
     }
 
     async getLocationByAddress(address: string): Promise<Location> {
-        return await this.locationsRepository.getLocationByAddress(address);
+        return await this.locationsRepository.getLocation({ address });
+    }
+
+    async getUniqueLocationCode(): Promise<number> {
+        let locationCode = Math.floor(Math.random() * 90000) + 10000;
+        let location: Location = await this.locationsRepository.getLocation({
+            locationCode,
+        });
+        if (location) this.getUniqueLocationCode();
+        return locationCode;
+    }
+
+    buildLocation(data: CreateLocation, locationCode): Location {
+        let location: Location = new Location();
+        location.latitude = data.latitude;
+        location.longitude = data.longitude;
+        location.address = data.address;
+        location.city = data.city;
+        location.state = data.state;
+        location.locationName = data.locationName;
+        location.locationCode = locationCode;
+        return location;
     }
 }

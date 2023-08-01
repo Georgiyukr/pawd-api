@@ -12,8 +12,8 @@ export class Location {
     @Prop()
     locationName?: string;
 
-    @Prop()
-    locationCode?: number;
+    @Prop({ required: true })
+    locationCode: number;
 
     @Prop({ required: true })
     latitude: number;

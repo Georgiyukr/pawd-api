@@ -6,10 +6,7 @@ import { Location } from "../../../sharable/entities";
 export class LocationsRepository {
     constructor(private readonly dataServices: DataServices) {}
 
-    async getLocationByAddress(
-        address: string,
-        options = undefined
-    ): Promise<Location> {
-        return await this.dataServices.locations.get({ address }, options);
+    async getLocation(filter, options = undefined): Promise<Location> {
+        return await this.dataServices.locations.get(filter, options);
     }
 }
