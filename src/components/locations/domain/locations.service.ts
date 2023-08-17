@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { CreateLocation } from "./types";
 import { Location } from "../../../sharable/entities";
 import { LocationsRepository } from "../data/locations.repository";
+import * as QRcode from "qrcode";
 
 @Injectable()
 export class LocationsService {
@@ -16,7 +17,17 @@ export class LocationsService {
             );
         const locationCode = await this.getUniqueLocationCode();
         location = this.buildLocation(data, locationCode);
+        location = await this.locationsRepository.createLocation(location);
+        let locationId: string = location.id;
+        let qrcode = await QRcode.toDataURL(locationId);
+        location = await this.updateLocationById(location.id, {
+            qrCodeBase64: qrcode,
+        });
         return location;
+    }
+
+    async updateLocationById(id, data): Promise<Location> {
+        return await this.locationsRepository.updateLocationById(id, data);
     }
 
     async getLocationByAddress(address: string): Promise<Location> {
