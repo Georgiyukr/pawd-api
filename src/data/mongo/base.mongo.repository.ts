@@ -51,7 +51,10 @@ export class BaseMongoRepository<T> implements BaseMongoRepositoryInterface<T> {
         return formatSingleResponseWithNoPassword(doc);
     }
 
-    async update(filter: T, update: T): Promise<T> {
+    async update(
+        filter: Record<string, T>,
+        update: Record<string, T>
+    ): Promise<T> {
         const doc: Document = await this.entity.findOneAndUpdate(
             filter,
             update,

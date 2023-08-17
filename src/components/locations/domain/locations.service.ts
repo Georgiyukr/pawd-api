@@ -18,8 +18,7 @@ export class LocationsService {
         const locationCode = await this.getUniqueLocationCode();
         location = this.buildLocation(data, locationCode);
         location = await this.locationsRepository.createLocation(location);
-        let locationId: string = location.id;
-        let qrcode = await QRcode.toDataURL(locationId);
+        let qrcode = await QRcode.toDataURL(location.id);
         location = await this.updateLocationById(location.id, {
             qrCodeBase64: qrcode,
         });
