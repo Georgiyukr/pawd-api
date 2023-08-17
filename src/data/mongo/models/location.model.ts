@@ -5,24 +5,15 @@ import { Collections } from "./enums";
 
 export type LocationDocument = HydratedDocument<Location>;
 
-@Schema({
-    toJSON: {
-        virtuals: true,
-        transform: (doc, ret) => {
-            ret.id = ret._id;
-            delete ret._id;
-            delete ret.__v;
-        },
-    },
-})
+@Schema({})
 export class Location {
     _id?: string;
 
     @Prop()
     locationName?: string;
 
-    @Prop()
-    locationCode?: number;
+    @Prop({ required: true })
+    locationCode: number;
 
     @Prop({ required: true })
     latitude: number;
@@ -39,7 +30,7 @@ export class Location {
     @Prop({ required: true })
     state: string;
 
-    @Prop({ required: true })
+    @Prop({ required: true, default: false })
     occupied: boolean;
 
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: Collections.USER })
@@ -70,14 +61,6 @@ export class Location {
 
     @Prop()
     qrCodeBase64?: string;
-
-    toObject() {
-        const obj = this.toObject();
-        obj.id = obj._id;
-        delete obj._id;
-        delete obj.__v;
-        return obj;
-    }
 }
 
 export const LocationSchema = SchemaFactory.createForClass(Location);
