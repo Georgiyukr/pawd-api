@@ -5,6 +5,7 @@ import { BaseMongoQueryOptions, DeleteResult } from "./types";
 import {
     formatSingleResponse,
     formatSingleResponseWithNoPassword,
+    formatArrayResponse,
 } from "./formatters";
 
 interface BaseMongoRepositoryInterface<T> extends BaseRepositoryInterface<T> {}
@@ -16,10 +17,13 @@ export class BaseMongoRepository<T> implements BaseMongoRepositoryInterface<T> {
     }
 
     async getAll(options?: BaseMongoQueryOptions): Promise<T[]> {
-        return await this.entity
-            .find()
-            .populate(options.populate)
-            .select(options.select);
+        const doc = options
+            ? await this.entity
+                  .find()
+                  .populate(options.populate)
+                  .select(options.select)
+            : await this.entity.find();
+        return formatArrayResponse(doc);
     }
 
     async get(filter: any, options?: BaseMongoQueryOptions): Promise<T> {

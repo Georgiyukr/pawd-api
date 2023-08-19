@@ -1,14 +1,20 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { CreateLocation } from "./types";
+import { CreateLocation, GetAllLocations } from "./types";
 import { Location } from "../../../sharable/entities";
 import { LocationsRepository } from "../data/locations.repository";
 import * as QRcode from "qrcode";
-import { Messages } from "src/sharable/constants";
+import { Messages } from "../../../sharable/constants";
 import { Message } from "../../../sharable/types";
 
 @Injectable()
 export class LocationsService {
     constructor(private readonly locationsRepository: LocationsRepository) {}
+
+    async getAllLocations(): Promise<GetAllLocations | Message> {
+        const locations: Location[] =
+            await this.locationsRepository.getAllLocations();
+        return { total: locations.length, locations };
+    }
 
     async createLocation(data: CreateLocation): Promise<Location> {
         let location: Location = await this.getLocationByAddress(data.address);

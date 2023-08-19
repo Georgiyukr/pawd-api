@@ -10,6 +10,10 @@ export class LocationsRepository {
         return await this.dataServices.locations.get(filter, options);
     }
 
+    async getAllLocations(): Promise<Location[]> {
+        return await this.dataServices.locations.getAll();
+    }
+
     async createLocation(location: Location): Promise<Location> {
         return await this.dataServices.locations.create(location);
     }

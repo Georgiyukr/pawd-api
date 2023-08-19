@@ -2,6 +2,7 @@ import {
     Body,
     Controller,
     Delete,
+    Get,
     Param,
     Post,
     ValidationPipe,
@@ -9,11 +10,21 @@ import {
 import { CreateLocationInputDTO } from "./dto/inputs";
 import { LocationsService } from "../domain/locations.service";
 import { MessageOutputDTO } from "../../../sharable/dtos/output";
-import { CreateLocationOutputDTO } from "./dto/outputs";
+import {
+    CreateLocationOutputDTO,
+    GetAllLocationsOutputDTO,
+} from "./dto/outputs";
 
 @Controller("locations")
 export class LocationsController {
     constructor(private readonly locationsService: LocationsService) {}
+
+    @Get("/")
+    async getAllLocations(): Promise<
+        GetAllLocationsOutputDTO | MessageOutputDTO
+    > {
+        return await this.locationsService.getAllLocations();
+    }
 
     @Post("/")
     async createLocation(
