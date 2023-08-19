@@ -6,4 +6,5 @@ export interface BaseRepositoryInterface<T> {
     update(filter: Record<string, T>, update: Record<string, T>): Promise<T>;
     updateById(id: string, update: T): Promise<T>;
     delete(data: T): Promise<T | null | unknown>;
+    deleteById(id: string, ...rest): Promise<T | null | unknown>;
 }

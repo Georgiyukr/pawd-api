@@ -1,11 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { UsersService } from "../../users/domain/users.service";
-import { CreateUser, LoginUser } from "../../../sharable/types";
+import { CreateUser, LoginUser, Message } from "../../../sharable/types";
 import { User } from "../../../sharable/entities";
 import {
     AccessTokenPayload,
     LoggedInUser,
-    Message,
     PasswordResetToken,
     RegisteredUser,
 } from "./types";

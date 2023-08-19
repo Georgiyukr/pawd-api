@@ -1,6 +1,14 @@
-import { Body, Controller, Post, ValidationPipe } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Delete,
+    Param,
+    Post,
+    ValidationPipe,
+} from "@nestjs/common";
 import { CreateLocationDTO } from "./dto/inputs";
 import { LocationsService } from "../domain/locations.service";
+import { MessageOutputDTO } from "src/sharable/dtos/output";
 
 @Controller("locations")
 export class LocationsController {
@@ -11,5 +19,10 @@ export class LocationsController {
         @Body(new ValidationPipe()) createLocationDto: CreateLocationDTO
     ) {
         return await this.locationsService.createLocation(createLocationDto);
+    }
+
+    @Delete("/:id")
+    async deleteLocation(@Param("id") id: string): Promise<MessageOutputDTO> {
+        return await this.locationsService.deleteLocation(id);
     }
 }
