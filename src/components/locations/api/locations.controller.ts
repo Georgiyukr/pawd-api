@@ -6,9 +6,10 @@ import {
     Post,
     ValidationPipe,
 } from "@nestjs/common";
-import { CreateLocationDTO } from "./dto/inputs";
+import { CreateLocationInputDTO } from "./dto/inputs";
 import { LocationsService } from "../domain/locations.service";
-import { MessageOutputDTO } from "src/sharable/dtos/output";
+import { MessageOutputDTO } from "../../../sharable/dtos/output";
+import { CreateLocationOutputDTO } from "./dto/outputs";
 
 @Controller("locations")
 export class LocationsController {
@@ -16,8 +17,8 @@ export class LocationsController {
 
     @Post("/")
     async createLocation(
-        @Body(new ValidationPipe()) createLocationDto: CreateLocationDTO
-    ) {
+        @Body(new ValidationPipe()) createLocationDto: CreateLocationInputDTO
+    ): Promise<CreateLocationOutputDTO> {
         return await this.locationsService.createLocation(createLocationDto);
     }
 
