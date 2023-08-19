@@ -17,4 +17,8 @@ export class LocationsRepository {
     async updateLocationById(id, update): Promise<Location> {
         return await this.dataServices.locations.updateById(id, update);
     }
+
+    async deleteLocationById(id): Promise<Location | unknown> {
+        return await this.dataServices.locations.deleteById(id);
+    }
 }

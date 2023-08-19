@@ -3,6 +3,8 @@ import { CreateLocation } from "./types";
 import { Location } from "../../../sharable/entities";
 import { LocationsRepository } from "../data/locations.repository";
 import * as QRcode from "qrcode";
+import { Messages } from "src/sharable/constants";
+import { Message } from "../../../sharable/types";
 
 @Injectable()
 export class LocationsService {
@@ -27,6 +29,16 @@ export class LocationsService {
 
     async updateLocationById(id, data): Promise<Location> {
         return await this.locationsRepository.updateLocationById(id, data);
+    }
+
+    async deleteLocation(id: string): Promise<Message> {
+        const location = await this.locationsRepository.deleteLocationById(id);
+        if (!location)
+            throw new HttpException(
+                `Location with id ${id} does not exists.`,
+                HttpStatus.NOT_FOUND
+            );
+        return { message: Messages.default.locationDeleted };
     }
 
     async getLocationByAddress(address: string): Promise<Location> {

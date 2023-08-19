@@ -9,10 +9,6 @@ export interface LoggedInUser {
     accessToken: string;
 }
 
-export class Message {
-    message: string;
-}
-
 export class PasswordResetToken {
     passwordResetToken: string;
 }

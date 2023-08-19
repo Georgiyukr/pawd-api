@@ -18,5 +18,9 @@ export class NewUser extends CreateUser {
     paymentCustomerId: string;
 }
 
+export class Message {
+    message: string;
+}
+
 export type PaymentCustomer = Stripe.Customer;
 export type CreatePaymentCustomer = Stripe.CustomerCreateParams;

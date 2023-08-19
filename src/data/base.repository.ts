@@ -11,4 +11,5 @@ export abstract class BaseRepository<T> implements BaseRepositoryInterface<T> {
     ): Promise<T>;
     abstract updateById(id: string, update: T): Promise<T>;
     abstract delete(data: T): Promise<T | null | unknown>;
+    abstract deleteById(id: string, ...rest): Promise<T | null | unknown>;
 }

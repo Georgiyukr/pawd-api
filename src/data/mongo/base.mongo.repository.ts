@@ -63,7 +63,7 @@ export class BaseMongoRepository<T> implements BaseMongoRepositoryInterface<T> {
         return formatSingleResponseWithNoPassword(doc);
     }
 
-    async updateById(id, update: T): Promise<T> {
+    async updateById(id: string, update: T): Promise<T> {
         const _id = new Mongoose.Types.ObjectId(id);
         const doc: Document = await this.entity.findOneAndUpdate(
             { _id },
@@ -75,5 +75,10 @@ export class BaseMongoRepository<T> implements BaseMongoRepositoryInterface<T> {
 
     async delete(data: T): Promise<DeleteResult> {
         return await this.entity.deleteMany(data);
+    }
+
+    async deleteById(id: string, options: Mongoose.QueryOptions): Promise<T> {
+        const _id = new Mongoose.Types.ObjectId(id);
+        return await this.entity.findByIdAndRemove(_id, options);
     }
 }
