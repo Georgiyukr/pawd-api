@@ -16,6 +16,21 @@ export class LocationsService {
         return { total: locations.length, locations };
     }
 
+    async getLocationById(id: string): Promise<Location> {
+        const location: Location =
+            await this.locationsRepository.getLocationById(id);
+        if (!location)
+            throw new HttpException(
+                `Location with id ${id} does not exists.`,
+                HttpStatus.NOT_FOUND
+            );
+        return location;
+    }
+
+    async getLocationByAddress(address: string): Promise<Location> {
+        return await this.locationsRepository.getLocation({ address });
+    }
+
     async createLocation(data: CreateLocation): Promise<Location> {
         let location: Location = await this.getLocationByAddress(data.address);
         if (location)
@@ -45,10 +60,6 @@ export class LocationsService {
                 HttpStatus.NOT_FOUND
             );
         return { message: Messages.default.locationDeleted };
-    }
-
-    async getLocationByAddress(address: string): Promise<Location> {
-        return await this.locationsRepository.getLocation({ address });
     }
 
     async getUniqueLocationCode(): Promise<number> {

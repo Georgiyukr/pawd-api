@@ -26,6 +26,11 @@ export class LocationsController {
         return await this.locationsService.getAllLocations();
     }
 
+    @Get("/:id")
+    async getLocationById(@Param("id") id: string): Promise<any> {
+        return await this.locationsService.getLocationById(id);
+    }
+
     @Post("/")
     async createLocation(
         @Body(new ValidationPipe()) createLocationDto: CreateLocationInputDTO
