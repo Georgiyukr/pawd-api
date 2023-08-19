@@ -3,7 +3,7 @@ import { User, Session } from "./index";
 export class Location {
     id?: string;
     locationName?: string;
-    locationCode?: number;
+    locationCode: number;
     latitude: number;
     longitude: number;
     address: string;

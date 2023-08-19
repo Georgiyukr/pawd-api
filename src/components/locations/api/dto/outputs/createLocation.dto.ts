@@ -1,7 +1,16 @@
+import { Session } from "../../../../../sharable/entities";
+
 export class CreateLocationOutputDTO {
+    id?: string;
     locationName?: string;
-    address: string;
-    city: string;
-    latitude: number;
-    longitude: number;
+    locationCode?: number;
+    address?: string;
+    city?: string;
+    state?: string;
+    latitude?: number;
+    longitude?: number;
+    occupied?: boolean;
+    sessions?: Session[];
+    totalUses?: number;
+    qrCodeBase64?: string;
 }
