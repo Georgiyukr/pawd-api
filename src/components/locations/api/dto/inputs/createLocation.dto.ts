@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 
-export class CreateLocationDTO {
+export class CreateLocationInputDTO {
     @IsNotEmpty()
     @IsString()
     locationName: string;
