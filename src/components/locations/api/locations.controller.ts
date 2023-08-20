@@ -4,15 +4,17 @@ import {
     Delete,
     Get,
     Param,
+    Patch,
     Post,
     ValidationPipe,
 } from "@nestjs/common";
-import { CreateLocationInputDTO } from "./dto/inputs";
+import { CreateLocationInputDTO, UpdateLocationInputDTO } from "./dto/inputs";
 import { LocationsService } from "../domain/locations.service";
 import { MessageOutputDTO } from "../../../sharable/dtos/output";
 import {
     CreateLocationOutputDTO,
     GetAllLocationsOutputDTO,
+    LocationOutputDTO,
 } from "./dto/outputs";
 
 @Controller("locations")
@@ -27,7 +29,7 @@ export class LocationsController {
     }
 
     @Get("/:id")
-    async getLocationById(@Param("id") id: string): Promise<any> {
+    async getLocationById(@Param("id") id: string): Promise<LocationOutputDTO> {
         return await this.locationsService.getLocationById(id);
     }
 
@@ -36,6 +38,17 @@ export class LocationsController {
         @Body(new ValidationPipe()) createLocationDto: CreateLocationInputDTO
     ): Promise<CreateLocationOutputDTO> {
         return await this.locationsService.createLocation(createLocationDto);
+    }
+
+    @Patch("/:id")
+    async updateLocation(
+        @Param("id") id: string,
+        @Body(new ValidationPipe()) updateLocationDto: UpdateLocationInputDTO
+    ): Promise<LocationOutputDTO> {
+        return await this.locationsService.updateLocationById(
+            id,
+            updateLocationDto
+        );
     }
 
     @Delete("/:id")
