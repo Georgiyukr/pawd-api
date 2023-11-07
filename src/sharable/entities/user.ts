@@ -6,8 +6,8 @@ export class User {
     lastName: string;
     dogName: string;
     paymentCustomerId: string;
-    email: string;
-    password: string;
+    email: Lowercase<string>;
+    password?: string;
     refreshToken?: string;
     passwordResetToken?: string;
     dogImage?: string;
@@ -69,7 +69,7 @@ export class UserBuilder implements IUserBuilder {
         return this;
     }
 
-    setEmail(email: string) {
+    setEmail(email: Lowercase<string>) {
         this.user.email = email;
         return this;
     }

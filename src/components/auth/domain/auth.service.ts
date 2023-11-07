@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import {
+    HttpException,
+    HttpStatus,
+    Injectable,
+    NotFoundException,
+    UnauthorizedException,
+} from "@nestjs/common";
 import { UsersService } from "../../users/domain/users.service";
 import { CreateUser, LoginUser, Message } from "../../../sharable/types";
 import { User } from "../../../sharable/entities";
@@ -48,21 +54,21 @@ export class AuthService {
         let user: User = await this.userService.getUserByEmail(data.email, {
             select: "-sessions",
         });
+
         if (!user) {
-            throw new HttpException(
-                `User with email ${data.email} does not exist.`,
-                HttpStatus.NOT_FOUND
+            throw new NotFoundException(
+                `User with email ${data.email} does not exist.`
             );
         }
-        const passwordMatch = await this.hashService.compareToHash(
+
+        const passwordMatch: boolean = await this.hashService.compareToHash(
             data.password,
             user.password
         );
 
         if (!passwordMatch)
-            throw new HttpException(
-                "Username or Password provided do not match.",
-                HttpStatus.UNAUTHORIZED
+            throw new UnauthorizedException(
+                "Username or password provided do not match."
             );
 
         const { accessToken, refreshTokenHash }: Tokens =
@@ -83,11 +89,9 @@ export class AuthService {
         let user = await this.userService.getUserById(id, {
             select: "-sessions -password",
         });
+
         if (!user) {
-            throw new HttpException(
-                `User with id ${id} does not exist.`,
-                HttpStatus.NOT_FOUND
-            );
+            throw new NotFoundException(`User with id ${id} does not exist.`);
         }
 
         user = await this.userService.updateUserById(id, {
@@ -103,9 +107,8 @@ export class AuthService {
             select: "-password -sessions",
         });
         if (!user) {
-            throw new HttpException(
-                `User with email ${email} does not exist.`,
-                HttpStatus.NOT_FOUND
+            throw new NotFoundException(
+                `User with email ${email} does not exist.`
             );
         }
         let tokenPayload: AccessTokenPayload =
@@ -141,9 +144,8 @@ export class AuthService {
             select: "-password -sessions",
         });
         if (!user) {
-            throw new HttpException(
-                `User with email ${email} does not exist.`,
-                HttpStatus.NOT_FOUND
+            throw new NotFoundException(
+                `User with email ${email} does not exist.`
             );
         }
         await this.emailService.sendUsernameEmail(user);
