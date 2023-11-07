@@ -22,15 +22,16 @@ export class User {
     paymentCustomerId: string;
 
     @Prop({
+        type: String,
         required: true,
         lowercase: true,
         unique: true,
         match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/,
     })
-    email: string;
+    email: Lowercase<string>;
 
-    @Prop({ required: true })
-    password: string;
+    @Prop()
+    password?: string;
 
     @Prop()
     refreshToken?: string;

@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { UtilsModule } from "src/utils/utils.module";
+import { UtilsModule } from "../../utils/utils.module";
 import { PaymentsService } from "./payments.service";
 import { PaymentsRepository } from "./payments.repository";
 

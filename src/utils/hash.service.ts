@@ -11,6 +11,6 @@ export class HashService {
     }
 
     async compareToHash(data, hash): Promise<boolean> {
-        return await bcrypt.compare(data, hash);
+        return bcrypt.compare(data, hash);
     }
 }
