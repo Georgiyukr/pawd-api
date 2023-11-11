@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import {
+    ConflictException,
+    HttpException,
+    HttpStatus,
+    Injectable,
+} from "@nestjs/common";
 import { CreateUser, NewUser, PaymentCustomer } from "../../../sharable/types";
 import { User, UserBuilder } from "../../../sharable/entities";
 import { UsersRepository } from "../data/users.repository";
@@ -12,14 +17,15 @@ export class UsersService {
         private hashService: HashService,
         private paymentsService: PaymentsService
     ) {}
-    async createUser(data: CreateUser): Promise<any> {
+    async createUser(data: CreateUser): Promise<User> {
         let user: User = await this.getUserByEmail(data.email);
         if (user)
-            throw new HttpException(
-                `User with email ${data.email} already exists.`,
-                HttpStatus.CONFLICT
+            throw new ConflictException(
+                `User with email ${data.email} already exists.`
             );
+
         const hashedPassword = await this.hashService.makeHash(data.password);
+
         data.password = hashedPassword;
 
         const paymentCustomer: PaymentCustomer =
@@ -31,6 +37,7 @@ export class UsersService {
             ...data,
             paymentCustomerId: paymentCustomer.id,
         });
+
         user = await this.usersRepository.createUser(user);
 
         return user;
