@@ -17,6 +17,7 @@
     "test": "jest",
     "test:auth:service": "jest src/components/auth/test/auth.service.spec.ts",
     "test:users:service": "jest src/components/users/test/users.service.spec.ts",
+    "test:locations:service": "jest src/components/locations/test/locations.service.spec.ts",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
