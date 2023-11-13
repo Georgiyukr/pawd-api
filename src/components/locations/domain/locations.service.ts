@@ -28,6 +28,7 @@ export class LocationsService {
     }
 
     async getLocationByAddress(address: string): Promise<Location> {
+        // maybe needs NotFoundException
         return await this.locationsRepository.getLocation({ address });
     }
 
@@ -49,6 +50,7 @@ export class LocationsService {
     }
 
     async updateLocationById(id, data): Promise<Location> {
+        // maybe needs NotFoundException
         return await this.locationsRepository.updateLocationById(id, data);
     }
 
