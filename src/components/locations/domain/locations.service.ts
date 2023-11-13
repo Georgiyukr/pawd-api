@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import {
+    HttpException,
+    HttpStatus,
+    Injectable,
+    NotFoundException,
+} from "@nestjs/common";
 import { CreateLocation, GetAllLocations } from "./types";
 import { Location } from "../../../sharable/entities";
 import { LocationsRepository } from "../data/locations.repository";
@@ -20,9 +25,8 @@ export class LocationsService {
         const location: Location =
             await this.locationsRepository.getLocationById(id);
         if (!location)
-            throw new HttpException(
-                `Location with id ${id} does not exists.`,
-                HttpStatus.NOT_FOUND
+            throw new NotFoundException(
+                `Location with id ${id} does not exists.`
             );
         return location;
     }

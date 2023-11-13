@@ -2,6 +2,7 @@ import { Test } from "@nestjs/testing";
 import { LocationsService } from "../domain/locations.service";
 import { LocationsRepository } from "../data/locations.repository";
 import { locationStub } from "./stubs/location.stub";
+import { NotFoundException } from "@nestjs/common";
 
 describe("LocationsService", () => {
     let locationsService: LocationsService;
@@ -60,7 +61,36 @@ describe("LocationsService", () => {
         });
     });
     describe("getLocationById", () => {
-        it("should", async () => {});
+        it("should return a location when correct id is provided", async () => {
+            const id = locationStub().id;
+            const response = locationStub();
+
+            const getLocationMock = jest
+                .spyOn(locationsRepository, "getLocationById")
+                .mockResolvedValue(locationStub());
+
+            const result = await locationsService.getLocationById(id);
+
+            expect(getLocationMock).toHaveBeenCalledWith(id);
+            expect(result).toEqual(response);
+        });
+
+        it("should return NotFoundException when incorrect id is provided", async () => {
+            const id = "invalid_id";
+
+            jest.spyOn(
+                locationsRepository,
+                "getLocationById"
+            ).mockResolvedValue(null);
+
+            const result = async () =>
+                await locationsService.getLocationById(id);
+
+            await expect(result).rejects.toThrow(NotFoundException);
+            await expect(result).rejects.toThrowError(
+                new NotFoundException(`Location with id ${id} does not exists.`)
+            );
+        });
     });
     describe("getLocationByAddress", () => {
         it("should", async () => {});
