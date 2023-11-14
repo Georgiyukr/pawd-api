@@ -1,4 +1,5 @@
 import {
+    ConflictException,
     HttpException,
     HttpStatus,
     Injectable,
@@ -39,9 +40,8 @@ export class LocationsService {
     async createLocation(data: CreateLocation): Promise<Location> {
         let location: Location = await this.getLocationByAddress(data.address);
         if (location)
-            throw new HttpException(
-                `Location with address ${data.address} already exists.`,
-                HttpStatus.CONFLICT
+            throw new ConflictException(
+                `Location with address ${data.address} already exists.`
             );
         const locationCode = await this.getUniqueLocationCode();
         location = this.buildLocation(data, locationCode);

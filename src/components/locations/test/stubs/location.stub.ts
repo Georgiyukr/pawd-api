@@ -12,5 +12,6 @@ export const locationStub = (): Location => {
     location.state = "GA";
     location.occupied = false;
     location.totalUses = 0;
+    location.qrCodeBase64 = "qr_code";
     return location;
 };

@@ -2,7 +2,11 @@ import { Test } from "@nestjs/testing";
 import { LocationsService } from "../domain/locations.service";
 import { LocationsRepository } from "../data/locations.repository";
 import { locationStub } from "./stubs/location.stub";
-import { NotFoundException } from "@nestjs/common";
+import { ConflictException, NotFoundException } from "@nestjs/common";
+import { CreateLocation } from "../domain/types";
+import { Location } from "../../../sharable/entities";
+import * as QRcode from "qrcode";
+import exp from "constants";
 
 describe("LocationsService", () => {
     let locationsService: LocationsService;
@@ -60,6 +64,7 @@ describe("LocationsService", () => {
             expect(result).toEqual(response);
         });
     });
+
     describe("getLocationById", () => {
         it("should return a location when correct id is provided", async () => {
             const id = locationStub().id;
@@ -92,10 +97,104 @@ describe("LocationsService", () => {
             );
         });
     });
-    describe("getLocationByAddress", () => {
-        it("should", async () => {});
-    });
+
     describe("createLocation", () => {
+        it("should create a location", async () => {
+            const locationInput: CreateLocation = {
+                locationName: locationStub().locationName,
+                address: locationStub().address,
+                city: locationStub().city,
+                state: locationStub().state,
+                latitude: locationStub().latitude,
+                longitude: locationStub().longitude,
+            };
+
+            const response: Location = locationStub();
+
+            const getLocationMock = jest
+                .spyOn(locationsService, "getLocationByAddress")
+                .mockResolvedValue(null);
+
+            const locationCodeMock = jest
+                .spyOn(locationsService, "getUniqueLocationCode")
+                .mockResolvedValue(locationStub().locationCode);
+
+            const buildLocationMock = jest
+                .spyOn(locationsService, "buildLocation")
+                .mockReturnValue({
+                    ...locationInput,
+                    locationCode: locationStub().locationCode,
+                } as Location);
+
+            const createLocationMock = jest
+                .spyOn(locationsRepository, "createLocation")
+                .mockResolvedValue({
+                    id: locationStub().id,
+                    locationName: locationStub().locationName,
+                    address: locationStub().address,
+                    city: locationStub().city,
+                    state: locationStub().state,
+                    latitude: locationStub().latitude,
+                    longitude: locationStub().longitude,
+                    locationCode: locationStub().locationCode,
+                    occupied: locationStub().occupied,
+                    totalUses: locationStub().totalUses,
+                });
+
+            const qrcodeMock = jest
+                .spyOn(QRcode, "toDataURL")
+                .mockResolvedValue(locationStub().qrCodeBase64);
+
+            const updateLocationSpy = jest
+                .spyOn(locationsRepository, "updateLocationById")
+                .mockResolvedValue(locationStub());
+
+            const result = await locationsService.createLocation(locationInput);
+
+            expect(getLocationMock).toHaveBeenCalledWith(locationInput.address);
+            expect(locationCodeMock).toHaveBeenCalled();
+            expect(buildLocationMock).toHaveBeenCalledWith(
+                locationInput,
+                locationStub().locationCode
+            );
+            expect(createLocationMock).toHaveBeenCalledWith({
+                ...locationInput,
+                locationCode: locationStub().locationCode,
+            });
+            expect(qrcodeMock).toHaveBeenCalledWith(locationStub().id);
+            expect(updateLocationSpy).toHaveBeenCalledWith(locationStub().id, {
+                qrCodeBase64: locationStub().qrCodeBase64,
+            });
+            expect(result).toEqual(response);
+        });
+
+        it("should throw ConflictException if a location with provided address exists", async () => {
+            const locationInput: CreateLocation = {
+                locationName: locationStub().locationName,
+                address: locationStub().address,
+                city: locationStub().city,
+                state: locationStub().state,
+                latitude: locationStub().latitude,
+                longitude: locationStub().longitude,
+            };
+
+            jest.spyOn(
+                locationsService,
+                "getLocationByAddress"
+            ).mockResolvedValue(locationStub());
+
+            const result = async () =>
+                await locationsService.createLocation(locationInput);
+
+            await expect(result).rejects.toThrow(ConflictException);
+            await expect(result).rejects.toThrowError(
+                new ConflictException(
+                    `Location with address ${locationInput.address} already exists.`
+                )
+            );
+        });
+    });
+    describe("getLocationByAddress", () => {
         it("should", async () => {});
     });
     describe("updateLocationById", () => {
