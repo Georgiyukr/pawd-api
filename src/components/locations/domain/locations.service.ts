@@ -61,9 +61,8 @@ export class LocationsService {
     async deleteLocation(id: string): Promise<Message> {
         const location = await this.locationsRepository.deleteLocationById(id);
         if (!location)
-            throw new HttpException(
-                `Location with id ${id} does not exists.`,
-                HttpStatus.NOT_FOUND
+            throw new NotFoundException(
+                `Location with id ${id} does not exists.`
             );
         return { message: Messages.default.locationDeleted };
     }

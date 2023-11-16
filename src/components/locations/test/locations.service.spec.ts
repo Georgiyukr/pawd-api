@@ -6,7 +6,8 @@ import { ConflictException, NotFoundException } from "@nestjs/common";
 import { CreateLocation } from "../domain/types";
 import { Location } from "../../../sharable/entities";
 import * as QRcode from "qrcode";
-import exp from "constants";
+import { userStub } from "../../../components/auth/test/stubs/user.stub";
+import { Messages } from "../../../sharable/constants";
 
 describe("LocationsService", () => {
     let locationsService: LocationsService;
@@ -195,17 +196,54 @@ describe("LocationsService", () => {
         });
     });
     describe("getLocationByAddress", () => {
-        it("should", async () => {});
+        it("should define the method", async () => {
+            expect(locationsService.getLocationByAddress).toBeDefined();
+        });
     });
+
     describe("updateLocationById", () => {
-        it("should", async () => {});
+        it("should define the method", async () => {
+            expect(locationsService.updateLocationById).toBeDefined();
+        });
     });
+
     describe("deleteLocation", () => {
-        it("should", async () => {});
+        it("should delete location and return a message", async () => {
+            const id = userStub().id;
+            const response = { message: Messages.default.locationDeleted };
+
+            const locationSpy = jest
+                .spyOn(locationsRepository, "deleteLocationById")
+                .mockResolvedValue(userStub());
+
+            const result = await locationsService.deleteLocation(id);
+
+            expect(result).toEqual(response);
+            expect(locationSpy).toHaveBeenCalledWith(id);
+        });
+
+        it("should throw NotFoundException when wrong id is provided", async () => {
+            const id = "invalid_id";
+
+            jest.spyOn(
+                locationsRepository,
+                "deleteLocationById"
+            ).mockResolvedValue(null);
+
+            const result = async () =>
+                await locationsService.getLocationById(id);
+
+            await expect(result).rejects.toThrow(NotFoundException);
+            await expect(result).rejects.toThrowError(
+                new NotFoundException(`Location with id ${id} does not exists.`)
+            );
+        });
     });
+
     describe("getUniqueLocationCode", () => {
         it("should", async () => {});
     });
+
     describe("buildLocation", () => {
         it("should", async () => {});
     });
