@@ -72,7 +72,11 @@ export class LocationsService {
         let location: Location = await this.locationsRepository.getLocation({
             locationCode,
         });
-        if (location) this.getUniqueLocationCode();
+        let locationCodeTemp = await this.getUniqueLocationCode();
+        while (locationCodeTemp === locationCode) {
+            locationCodeTemp = await this.getUniqueLocationCode();
+        }
+        console.log("Location code before returning", locationCode);
         return locationCode;
     }
 
