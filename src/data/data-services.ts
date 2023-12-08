@@ -1,4 +1,4 @@
-import { Feedback, Location, Session, User } from "../sharable/entities";
+import { Feedback, Location, Session, User } from "../common/entities";
 import { BaseRepository } from "./base.repository";
 import { Injectable } from "@nestjs/common";
 

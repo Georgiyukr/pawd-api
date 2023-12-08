@@ -1,14 +1,20 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { CreateLocation, GetAllLocations } from "./types";
-import { Location } from "../../../sharable/entities";
+import { Location } from "../../../common/entities";
 import { LocationsRepository } from "../data/locations.repository";
 import * as QRcode from "qrcode";
-import { Messages } from "../../../sharable/constants";
-import { Message } from "../../../sharable/types";
+import { Messages } from "../../../common/constants";
+import { Message } from "../../../common/types";
+import { FilesystemService } from "../../../common/providers/filesystem.service";
+import { EncryptionService } from "../../../utils/encryption.service";
 
 @Injectable()
 export class LocationsService {
-    constructor(private readonly locationsRepository: LocationsRepository) {}
+    constructor(
+        private readonly locationsRepository: LocationsRepository,
+        private readonly filesystemService: FilesystemService,
+        private readonly encryptionService: EncryptionService
+    ) {}
 
     async getAllLocations(): Promise<GetAllLocations | Message> {
         const locations: Location[] =
@@ -63,12 +69,70 @@ export class LocationsService {
     }
 
     async getUniqueLocationCode(): Promise<number> {
+        let locationCodes: string[] = await this.readLocationCodes();
+
+        if (!locationCodes) {
+            var locationCodesArray = this.generateLocationCodesArray();
+            this.saveLocationCodes(locationCodesArray.toString());
+        } else {
+            console.log("getUniqueLocationCode file exists", locationCodes);
+            console.log();
+            this.saveLocationCodes(locationCodes.toString());
+        }
+
+        // if there is no file, create a file and generate an array
+        // if file exists, read it and get an array/set of location codes
+
         let locationCode = Math.floor(Math.random() * 90000) + 10000;
         let location: Location = await this.locationsRepository.getLocation({
             locationCode,
         });
         if (location) this.getUniqueLocationCode();
         return locationCode;
+    }
+
+    async saveLocationCodes(locationCodes: string): Promise<void> {
+        console.log(
+            "saveLocationCodes: locations codes before encryption",
+            locationCodes
+        );
+        locationCodes = await this.encryptionService.encrypt(locationCodes);
+
+        this.filesystemService.writeFile("location-codes.txt", locationCodes);
+
+        console.debug(
+            "saveLocationCodes: file is written to as ",
+            locationCodes
+        );
+        console.log();
+    }
+
+    async readLocationCodes() {
+        let locationCodesBuffer: string | Buffer =
+            this.filesystemService.readFile("location-codes.txt");
+
+        if (!locationCodesBuffer) {
+            console.debug("File not found at: ", "location-codes.txt");
+            console.log();
+            return null;
+        }
+
+        let locationCodes: string = await this.encryptionService.decrypt(
+            locationCodesBuffer.toString()
+        );
+
+        console.debug("File is read: ", locationCodes.split(","));
+        console.log();
+        return locationCodes.split(",");
+    }
+
+    generateLocationCodesArray(): number[] {
+        let locationCodesArray: number[] = [];
+        for (let i = 10000; i <= 10007; i++) {
+            locationCodesArray.push(i);
+        }
+        console.debug("Array of codes", locationCodesArray);
+        return locationCodesArray;
     }
 
     buildLocation(data: CreateLocation, locationCode): Location {

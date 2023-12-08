@@ -13,8 +13,8 @@ import {
     PasswordResetTokenOutputDTO,
     RegisterUserOutputDTO,
 } from "./dto/outputs";
-import { EmailInputDTO } from "../../../sharable/dtos/input";
-import { MessageOutputDTO } from "src/sharable/dtos/output";
+import { EmailInputDTO } from "../../../common/dtos/input";
+import { MessageOutputDTO } from "src/common/dtos/output";
 
 @Controller("auth")
 export class AuthController {

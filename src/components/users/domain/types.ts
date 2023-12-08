@@ -1,4 +1,4 @@
-import { Location, Session } from "../../../sharable/entities";
+import { Location, Session } from "../../../common/entities";
 
 export class User {
     id?: string;

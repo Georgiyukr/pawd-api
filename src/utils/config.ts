@@ -19,9 +19,12 @@ export class Config {
     stripeSecretKey: string;
     pawdEmail: string;
     emailPassword: string;
+    cryptoAlgorithm: string;
+    cryptoKey: string;
+    cryptoIv: string;
 
     constructor() {
-        this.jwtAlgorithm = process.env.ALGORITHM as Algorithm;
+        this.jwtAlgorithm = process.env.JWT_ALGORITHM as Algorithm;
         this.jwtAudience = process.env.AUDIENCE;
         this.jwtIssuer = process.env.ISSUER;
         this.accessTokenPrivateKey = process.env.ACCESS_TOKEN_PRIVATE_KEY;
@@ -37,5 +40,8 @@ export class Config {
         this.stripeSecretKey = process.env.STRIPE_SECRET_KEY;
         this.pawdEmail = process.env.PAWD_EMAIL;
         this.emailPassword = process.env.EMAIL_PASSWORD;
+        this.cryptoAlgorithm = process.env.CRYPTO_ALGORITHM;
+        this.cryptoKey = process.env.CRYPTO_KEY;
+        this.cryptoIv = process.env.CRYPTO_IV;
     }
 }

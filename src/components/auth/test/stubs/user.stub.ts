@@ -1,4 +1,4 @@
-import { User } from "../../../../sharable/entities";
+import { User } from "../../../../common/entities";
 
 export const userStub = (): User => {
     let user: User = new User();

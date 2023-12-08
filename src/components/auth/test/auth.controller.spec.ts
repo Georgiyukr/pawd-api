@@ -4,7 +4,7 @@ import { AuthService } from "../domain/auth.service";
 import { LoginUserInputDTO, RegisterUserInputDTO } from "../api/dto/inputs";
 import { LoginUserOutputDTO, RegisterUserOutputDTO } from "../api/dto/outputs";
 import { userStub } from "./stubs/user.stub";
-import { Messages } from "../../../sharable/constants";
+import { Messages } from "../../../common/constants";
 
 describe("AuthController", () => {
     let authController: AuthController;
