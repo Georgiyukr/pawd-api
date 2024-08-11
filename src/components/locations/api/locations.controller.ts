@@ -10,7 +10,7 @@ import {
 } from "@nestjs/common";
 import { CreateLocationInputDTO, UpdateLocationInputDTO } from "./dto/inputs";
 import { LocationsService } from "../domain/locations.service";
-import { MessageOutputDTO } from "../../../sharable/dtos/output";
+import { MessageOutputDTO } from "../../../common/dtos/output";
 import {
     CreateLocationOutputDTO,
     GetAllLocationsOutputDTO,

@@ -1,6 +1,6 @@
 import { ISendMailOptions, MailerService } from "@nestjs-modules/mailer";
 import { Injectable } from "@nestjs/common";
-import { User } from "../../../sharable/entities";
+import { User } from "../../../common/entities";
 import { EmailService } from "../email.service";
 import * as constants from "../constants";
 

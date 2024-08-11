@@ -1,4 +1,4 @@
-import { Location } from "../../../../../sharable/entities";
+import { Location } from "../../../../../common/entities";
 
 export class GetAllLocationsOutputDTO {
     locations: Location[];

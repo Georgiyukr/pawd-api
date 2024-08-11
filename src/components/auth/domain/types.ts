@@ -1,4 +1,4 @@
-import { Session, User } from "../../../sharable/entities";
+import { Session, User } from "../../../common/entities";
 
 export interface AccessTokenPayload {
     userId: string;

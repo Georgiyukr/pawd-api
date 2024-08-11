@@ -6,8 +6,8 @@ import {
     UnauthorizedException,
 } from "@nestjs/common";
 import { UsersService } from "../../users/domain/users.service";
-import { CreateUser, LoginUser, Message } from "../../../sharable/types";
-import { User } from "../../../sharable/entities";
+import { CreateUser, LoginUser, Message } from "../../../common/types";
+import { User } from "../../../common/entities";
 import {
     AccessTokenPayload,
     LoggedInUser,
@@ -17,7 +17,7 @@ import {
 import { HashService } from "../../../utils/hash.service";
 import { JwtService } from "./jwt.service";
 import { EmailService } from "../../../utils/email/email.service";
-import { Messages } from "../../../sharable/constants/";
+import { Messages } from "../../../common/constants";
 
 interface Tokens {
     accessToken: string;

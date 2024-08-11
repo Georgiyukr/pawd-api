@@ -1,14 +1,20 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { CreateLocation, GetAllLocations } from "./types";
-import { Location } from "../../../sharable/entities";
+import { Location } from "../../../common/entities";
 import { LocationsRepository } from "../data/locations.repository";
 import * as QRcode from "qrcode";
-import { Messages } from "../../../sharable/constants";
-import { Message } from "../../../sharable/types";
+import { Messages } from "../../../common/constants";
+import { Message } from "../../../common/types";
+import { FilesystemService } from "../../../common/providers/filesystem.service";
+import { EncryptionService } from "../../../utils/encryption.service";
 
 @Injectable()
 export class LocationsService {
-    constructor(private readonly locationsRepository: LocationsRepository) {}
+    constructor(
+        private readonly locationsRepository: LocationsRepository,
+        private readonly filesystemService: FilesystemService,
+        private readonly encryptionService: EncryptionService
+    ) {}
 
     async getAllLocations(): Promise<GetAllLocations | Message> {
         const locations: Location[] =
@@ -63,12 +69,54 @@ export class LocationsService {
     }
 
     async getUniqueLocationCode(): Promise<number> {
-        let locationCode = Math.floor(Math.random() * 90000) + 10000;
-        let location: Location = await this.locationsRepository.getLocation({
-            locationCode,
-        });
-        if (location) this.getUniqueLocationCode();
+        let locationCodes: string[] | Number[] = await this.readLocationCodes();
+
+        if (!locationCodes) {
+            locationCodes = this.generateLocationCodesArray();
+            this.saveLocationCodes(locationCodes);
+        }
+
+        let locationCodeIndex = Math.floor(
+            Math.random() * locationCodes.length
+        );
+        const locationCode = Number(
+            locationCodes.splice(locationCodeIndex, 1)[0]
+        );
+        this.saveLocationCodes(locationCodes);
         return locationCode;
+    }
+
+    async saveLocationCodes(locationCodes: string[] | Number[]): Promise<void> {
+        const encryptedLocationCodes = await this.encryptionService.encrypt(
+            locationCodes.toString()
+        );
+
+        this.filesystemService.writeFile(
+            "location-codes.txt",
+            encryptedLocationCodes
+        );
+    }
+
+    async readLocationCodes() {
+        let locationCodesBuffer: string | Buffer =
+            this.filesystemService.readFile("location-codes.txt");
+
+        if (!locationCodesBuffer) return null;
+
+        let locationCodes: string = await this.encryptionService.decrypt(
+            locationCodesBuffer.toString()
+        );
+
+        console.log();
+        return locationCodes.split(",");
+    }
+
+    generateLocationCodesArray(): number[] {
+        let locationCodesArray: number[] = [];
+        for (let i = 10000; i <= 99999; i++) {
+            locationCodesArray.push(i);
+        }
+        return locationCodesArray;
     }
 
     buildLocation(data: CreateLocation, locationCode): Location {

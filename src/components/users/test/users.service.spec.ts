@@ -3,9 +3,9 @@ import { PaymentsService } from "../../../components/payments/payments.service";
 import { HashService } from "../../../utils/hash.service";
 import { UsersRepository } from "../data/users.repository";
 import { UsersService } from "../domain/users.service";
-import { CreateUser, NewUser, PaymentCustomer } from "../../../sharable/types";
+import { CreateUser, NewUser, PaymentCustomer } from "../../../common/types";
 import { userStub } from "../../../components/auth/test/stubs/user.stub";
-import { User } from "../../../sharable/entities";
+import { User } from "../../../common/entities";
 import { ConflictException } from "@nestjs/common";
 
 describe("UsersService", () => {

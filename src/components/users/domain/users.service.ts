@@ -4,8 +4,8 @@ import {
     HttpStatus,
     Injectable,
 } from "@nestjs/common";
-import { CreateUser, NewUser, PaymentCustomer } from "../../../sharable/types";
-import { User, UserBuilder } from "../../../sharable/entities";
+import { CreateUser, NewUser, PaymentCustomer } from "../../../common/types";
+import { User, UserBuilder } from "../../../common/entities";
 import { UsersRepository } from "../data/users.repository";
 import { HashService } from "../../../utils/hash.service";
 import { PaymentsService } from "../../../components/payments/payments.service";

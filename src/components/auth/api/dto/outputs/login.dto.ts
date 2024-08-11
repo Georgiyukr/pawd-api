@@ -1,4 +1,4 @@
-import { User } from "../../../../../sharable/entities";
+import { User } from "../../../../../common/entities";
 
 export class LoginUserOutputDTO {
     user: User;

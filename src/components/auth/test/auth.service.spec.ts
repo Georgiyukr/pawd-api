@@ -1,5 +1,5 @@
 import { Test } from "@nestjs/testing";
-import { CreateUser, LoginUser } from "../../../sharable/types";
+import { CreateUser, LoginUser } from "../../../common/types";
 import { AuthService } from "../domain/auth.service";
 import { UsersService } from "../../../components/users/domain/users.service";
 import { EmailService } from "../../../utils/email/email.service";
@@ -9,7 +9,7 @@ import { userStub } from "./stubs/user.stub";
 import { AccessTokenModule, RefreshTokenModule } from "../auth.module";
 import { NodeMailerService } from "../../../utils/email/nodemailer/nodemailer.service";
 import { NotFoundException, UnauthorizedException } from "@nestjs/common";
-import { Messages } from "../../../sharable/constants";
+import { Messages } from "../../../common/constants";
 
 describe("AuthService", () => {
     let authService: AuthService;

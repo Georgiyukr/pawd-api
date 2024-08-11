@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { PaymentsRepository } from "./payments.repository";
-import { CreatePaymentCustomer, PaymentCustomer } from "../../sharable/types";
+import { CreatePaymentCustomer, PaymentCustomer } from "../../common/types";
 
 @Injectable()
 export class PaymentsService {
