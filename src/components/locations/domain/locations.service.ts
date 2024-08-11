@@ -69,69 +69,53 @@ export class LocationsService {
     }
 
     async getUniqueLocationCode(): Promise<number> {
-        let locationCodes: string[] = await this.readLocationCodes();
+        let locationCodes: string[] | Number[] = await this.readLocationCodes();
 
         if (!locationCodes) {
-            var locationCodesArray = this.generateLocationCodesArray();
-            this.saveLocationCodes(locationCodesArray.toString());
-        } else {
-            console.log("getUniqueLocationCode file exists", locationCodes);
-            console.log();
-            this.saveLocationCodes(locationCodes.toString());
+            locationCodes = this.generateLocationCodesArray();
+            this.saveLocationCodes(locationCodes);
         }
 
-        // if there is no file, create a file and generate an array
-        // if file exists, read it and get an array/set of location codes
-
-        let locationCode = Math.floor(Math.random() * 90000) + 10000;
-        let location: Location = await this.locationsRepository.getLocation({
-            locationCode,
-        });
-        if (location) this.getUniqueLocationCode();
+        let locationCodeIndex = Math.floor(
+            Math.random() * locationCodes.length
+        );
+        const locationCode = Number(
+            locationCodes.splice(locationCodeIndex, 1)[0]
+        );
+        this.saveLocationCodes(locationCodes);
         return locationCode;
     }
 
-    async saveLocationCodes(locationCodes: string): Promise<void> {
-        console.log(
-            "saveLocationCodes: locations codes before encryption",
-            locationCodes
+    async saveLocationCodes(locationCodes: string[] | Number[]): Promise<void> {
+        const encryptedLocationCodes = await this.encryptionService.encrypt(
+            locationCodes.toString()
         );
-        locationCodes = await this.encryptionService.encrypt(locationCodes);
 
-        this.filesystemService.writeFile("location-codes.txt", locationCodes);
-
-        console.debug(
-            "saveLocationCodes: file is written to as ",
-            locationCodes
+        this.filesystemService.writeFile(
+            "location-codes.txt",
+            encryptedLocationCodes
         );
-        console.log();
     }
 
     async readLocationCodes() {
         let locationCodesBuffer: string | Buffer =
             this.filesystemService.readFile("location-codes.txt");
 
-        if (!locationCodesBuffer) {
-            console.debug("File not found at: ", "location-codes.txt");
-            console.log();
-            return null;
-        }
+        if (!locationCodesBuffer) return null;
 
         let locationCodes: string = await this.encryptionService.decrypt(
             locationCodesBuffer.toString()
         );
 
-        console.debug("File is read: ", locationCodes.split(","));
         console.log();
         return locationCodes.split(",");
     }
 
     generateLocationCodesArray(): number[] {
         let locationCodesArray: number[] = [];
-        for (let i = 10000; i <= 10007; i++) {
+        for (let i = 10000; i <= 99999; i++) {
             locationCodesArray.push(i);
         }
-        console.debug("Array of codes", locationCodesArray);
         return locationCodesArray;
     }
 
