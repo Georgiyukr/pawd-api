@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
 import { DataServicesModule } from "src/data/data-services.module";
 import { UtilsModule } from "src/utils/utils.module";
-import { LocationsService } from "./domain/locations.service";
-import { LocationsController } from "./api/locations.controller";
-import { LocationsRepository } from "./data/locations.repository";
+import { LocationsService } from "./locations.service";
+import { LocationsController } from "./locations.controller";
+import { LocationsRepository } from "./locations.repository";
 import { CommonProvidersModule } from "src/common/providers/providers.modules";
 
 @Module({

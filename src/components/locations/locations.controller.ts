@@ -8,14 +8,14 @@ import {
     Post,
     ValidationPipe,
 } from "@nestjs/common";
-import { CreateLocationInputDTO, UpdateLocationInputDTO } from "./dto/inputs";
-import { LocationsService } from "../domain/locations.service";
-import { MessageOutputDTO } from "../../../common/dtos/output";
+import { CreateLocationInputDTO, UpdateLocationInputDTO } from "./dtos/inputs";
+import { LocationsService } from "./locations.service";
+import { MessageOutputDTO } from "../../common/dtos/output";
 import {
     CreateLocationOutputDTO,
     GetAllLocationsOutputDTO,
     LocationOutputDTO,
-} from "./dto/outputs";
+} from "./dtos/outputs";
 
 @Controller("locations")
 export class LocationsController {

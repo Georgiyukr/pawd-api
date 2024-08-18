@@ -1,4 +1,4 @@
-import { Session } from "../../../../../common/entities";
+import { Session } from "../../../../common/entities";
 
 export class RegisterUserOutputDTO {
     user: {

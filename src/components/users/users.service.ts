@@ -4,11 +4,11 @@ import {
     HttpStatus,
     Injectable,
 } from "@nestjs/common";
-import { CreateUser, NewUser, PaymentCustomer } from "../../../common/types";
-import { User, UserBuilder } from "../../../common/entities";
-import { UsersRepository } from "../data/users.repository";
-import { HashService } from "../../../utils/hash.service";
-import { PaymentsService } from "../../../components/payments/payments.service";
+import { CreateUser, NewUser, PaymentCustomer } from "../../common/types";
+import { User, UserBuilder } from "../../common/entities";
+import { UsersRepository } from "./users.repository";
+import { HashService } from "../../utils/hash.service";
+import { PaymentsService } from "../payments/payments.service";
 
 @Injectable()
 export class UsersService {

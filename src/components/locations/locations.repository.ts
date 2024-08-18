@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { DataServices } from "../../../data/data-services";
-import { Location } from "../../../common/entities";
+import { DataServices } from "../../data/data-services";
+import { Location } from "../../common/entities";
 
 @Injectable()
 export class LocationsRepository {

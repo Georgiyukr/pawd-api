@@ -1,4 +1,4 @@
-import { Session } from "../../../../../common/entities";
+import { Session } from "../../../../common/entities";
 
 export class CreateLocationOutputDTO {
     id?: string;
