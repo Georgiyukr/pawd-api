@@ -1,12 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { CreateLocation, GetAllLocations } from "./types";
-import { Location } from "../../../common/entities";
-import { LocationsRepository } from "../data/locations.repository";
+import { Location } from "../../common/entities";
+import { LocationsRepository } from "./locations.repository";
 import * as QRcode from "qrcode";
-import { Messages } from "../../../common/constants";
-import { Message } from "../../../common/types";
-import { FilesystemService } from "../../../common/providers/filesystem.service";
-import { EncryptionService } from "../../../utils/encryption.service";
+import { Messages } from "../../common/constants";
+import { Message } from "../../common/types";
+import { FilesystemService } from "../../common/providers/filesystem.service";
+import { EncryptionService } from "../../utils/encryption.service";
 
 @Injectable()
 export class LocationsService {
@@ -68,6 +68,9 @@ export class LocationsService {
         return { message: Messages.default.locationDeleted };
     }
 
+    // need to figure out a backup plan if location-codes.txt file gets deleted.
+    // Option: query for all location codes in DB and when generating a new file
+    // don't put existing codes in the file
     async getUniqueLocationCode(): Promise<number> {
         let locationCodes: string[] | Number[] = await this.readLocationCodes();
 

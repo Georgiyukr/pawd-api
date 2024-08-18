@@ -6,14 +6,14 @@ import {
     Post,
     ValidationPipe,
 } from "@nestjs/common";
-import { AuthService } from "../domain/auth.service";
-import { LoginUserInputDTO, RegisterUserInputDTO } from "./dto/inputs";
+import { AuthService } from "./auth.service";
+import { LoginUserInputDTO, RegisterUserInputDTO } from "./dtos/inputs";
 import {
     LoginUserOutputDTO,
     PasswordResetTokenOutputDTO,
     RegisterUserOutputDTO,
-} from "./dto/outputs";
-import { EmailInputDTO } from "../../../common/dtos/input";
+} from "./dtos/outputs";
+import { EmailInputDTO } from "../../common/dtos/input";
 import { MessageOutputDTO } from "src/common/dtos/output";
 
 @Controller("auth")

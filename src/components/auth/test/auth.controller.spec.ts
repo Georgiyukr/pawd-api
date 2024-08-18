@@ -1,8 +1,8 @@
 import { Test } from "@nestjs/testing";
-import { AuthController } from "../api/auth.controller";
-import { AuthService } from "../domain/auth.service";
-import { LoginUserInputDTO, RegisterUserInputDTO } from "../api/dto/inputs";
-import { LoginUserOutputDTO, RegisterUserOutputDTO } from "../api/dto/outputs";
+import { AuthController } from "../auth.controller";
+import { AuthService } from "../auth.service";
+import { LoginUserInputDTO, RegisterUserInputDTO } from "../dtos/inputs";
+import { LoginUserOutputDTO, RegisterUserOutputDTO } from "../dtos/outputs";
 import { userStub } from "./stubs/user.stub";
 import { Messages } from "../../../common/constants";
 

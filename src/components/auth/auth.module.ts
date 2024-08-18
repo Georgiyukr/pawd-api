@@ -3,16 +3,16 @@ import {
     JwtService as NestJwtService,
     JwtModule as NestJwtModule,
 } from "@nestjs/jwt";
-import { AuthController } from "./api/auth.controller";
-import { AuthService } from "./domain/auth.service";
+import { AuthController } from "./auth.controller";
+import { AuthService } from "./auth.service";
 import { UsersModule } from "../users/users.module";
 import { Config } from "../../utils/config";
 import { UtilsModule } from "../../utils/utils.module";
-import { JwtService } from "./domain/jwt.service";
+import { JwtService } from "./jwt.service";
 import {
     JWT_ACCCESS_TOKEN_SERVICE,
     JWT_REFRESH_TOKEN_SERVICE,
-} from "./domain/constants";
+} from "./constants";
 
 @Module({
     imports: [

@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
-import { UsersService } from "./domain/users.service";
-import { UsersController } from "./api/users.controller";
+import { UsersService } from "./users.service";
+import { UsersController } from "./users.controller";
 import { DataServicesModule } from "../../data/data-services.module";
-import { UsersRepository } from "./data/users.repository";
+import { UsersRepository } from "./users.repository";
 import { UtilsModule } from "../../utils/utils.module";
 import { PaymentsModule } from "../payments/payments.module";
 

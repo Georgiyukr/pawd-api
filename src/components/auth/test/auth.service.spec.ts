@@ -1,10 +1,10 @@
 import { Test } from "@nestjs/testing";
 import { CreateUser, LoginUser } from "../../../common/types";
-import { AuthService } from "../domain/auth.service";
-import { UsersService } from "../../../components/users/domain/users.service";
+import { AuthService } from "../auth.service";
+import { UsersService } from "../../users/users.service";
 import { EmailService } from "../../../utils/email/email.service";
 import { HashService } from "../../../utils/hash.service";
-import { JwtService } from "../domain/jwt.service";
+import { JwtService } from "../jwt.service";
 import { userStub } from "./stubs/user.stub";
 import { AccessTokenModule, RefreshTokenModule } from "../auth.module";
 import { NodeMailerService } from "../../../utils/email/nodemailer/nodemailer.service";

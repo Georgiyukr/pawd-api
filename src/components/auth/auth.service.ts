@@ -5,19 +5,19 @@ import {
     NotFoundException,
     UnauthorizedException,
 } from "@nestjs/common";
-import { UsersService } from "../../users/domain/users.service";
-import { CreateUser, LoginUser, Message } from "../../../common/types";
-import { User } from "../../../common/entities";
+import { UsersService } from "../users/users.service";
+import { CreateUser, LoginUser, Message } from "../../common/types";
+import { User } from "../../common/entities";
 import {
     AccessTokenPayload,
     LoggedInUser,
     PasswordResetToken,
     RegisteredUser,
 } from "./types";
-import { HashService } from "../../../utils/hash.service";
+import { HashService } from "../../utils/hash.service";
 import { JwtService } from "./jwt.service";
-import { EmailService } from "../../../utils/email/email.service";
-import { Messages } from "../../../common/constants";
+import { EmailService } from "../../utils/email/email.service";
+import { Messages } from "../../common/constants";
 
 interface Tokens {
     accessToken: string;
