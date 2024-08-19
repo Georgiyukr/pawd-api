@@ -17,6 +17,12 @@ import {
     DeletePaymentMethodInputDTO,
     PaymentMethodIdDTO,
 } from './dtos/input.dto'
+import {
+    CanceledIntentOutputDTO,
+    IntentOutputDTO,
+    PaymentMethodOutputDTO,
+    PublicKeyOutputDTO,
+} from './dtos/output.dto'
 
 @Controller('payments')
 export class PaymentsController {
@@ -26,19 +32,21 @@ export class PaymentsController {
     ) {}
 
     @Get('/key')
-    async getPublicKey(): Promise<any> {
-        return { key: this.config.stripePublicKey }
+    async getPublicKey(): Promise<PublicKeyOutputDTO> {
+        return { publicKey: this.config.stripePublicKey }
     }
 
     @Post('/intents')
     async setupIntent(
         @Body(new ValidationPipe()) data: UserIdInputDTO
-    ): Promise<any> {
+    ): Promise<IntentOutputDTO> {
         return await this.paymentsService.setupIntent()
     }
 
     @Delete('/intents/:id')
-    async deleteIntent(@Param('id') id: string): Promise<any> {
+    async deleteIntent(
+        @Param('id') paymentIntentId: string
+    ): Promise<CanceledIntentOutputDTO> {
         return await this.paymentsService.deleteIntent()
     }
 
@@ -52,28 +60,28 @@ export class PaymentsController {
     @Post('/methods')
     async createPaymentMethod(
         @Body(new ValidationPipe()) data: CreatePaymentMethodInputDTO
-    ): Promise<any> {
+    ): Promise<PaymentMethodOutputDTO[]> {
         return await this.paymentsService.createPaymentMethod()
     }
 
     @Post('/methods/default')
     async setDefaultPaymentMethod(
         @Body(new ValidationPipe()) data: PaymentMethodIdDTO
-    ): Promise<any> {
+    ): Promise<PaymentMethodOutputDTO> {
         return await this.paymentsService.setDefaultPaymentMethod()
     }
 
     @Patch('/methods/default')
     async changeDefaultPaymentMethod(
         @Body(new ValidationPipe()) data: ChangeDefaultPaymentMethod
-    ): Promise<any> {
+    ): Promise<PaymentMethodOutputDTO> {
         return await this.paymentsService.changeDefaultPaymentMethod()
     }
 
     @Delete('/methods')
     async deletePaymentMethod(
         @Body(new ValidationPipe()) data: DeletePaymentMethodInputDTO
-    ): Promise<any> {
+    ): Promise<PaymentMethodOutputDTO> {
         return await this.paymentsService.deletePaymentMethod()
     }
 }
