@@ -1,11 +1,11 @@
-import { Module } from "@nestjs/common";
-import { MongooseModule } from "@nestjs/mongoose";
-import { ConfigModule } from "@nestjs/config";
-import { DataServicesModule } from "./data/data-services.module";
-import { UsersModule } from "./components/users/users.module";
-import { AuthModule } from "./components/auth/auth.module";
-import { LocationsModule } from "./components/locations/locations.module";
-import { PaymentsController } from './payments/payments.controller';
+import { Module } from '@nestjs/common'
+import { MongooseModule } from '@nestjs/mongoose'
+import { ConfigModule } from '@nestjs/config'
+import { DataServicesModule } from './data/data-services.module'
+import { UsersModule } from './components/users/users.module'
+import { AuthModule } from './components/auth/auth.module'
+import { LocationsModule } from './components/locations/locations.module'
+import { PaymentsModule } from './components/payments/payments.module'
 
 @Module({
     imports: [
@@ -17,7 +17,7 @@ import { PaymentsController } from './payments/payments.controller';
         UsersModule,
         AuthModule,
         LocationsModule,
+        PaymentsModule,
     ],
-    controllers: [PaymentsController],
 })
 export class AppModule {}

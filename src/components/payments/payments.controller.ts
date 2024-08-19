@@ -1,45 +1,79 @@
-import { Controller, Delete, Get, Patch, Post } from '@nestjs/common'
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Patch,
+    Post,
+    ValidationPipe,
+} from '@nestjs/common'
 import { PaymentsService } from './payments.service'
+import { Config } from '../../utils/config'
+import { UserIdInputDTO } from '../../common/dtos/input'
+import {
+    ChangeDefaultPaymentMethod,
+    CreatePaymentMethodInputDTO,
+    DeletePaymentMethodInputDTO,
+    PaymentMethodIdDTO,
+} from './dtos/input.dto'
 
 @Controller('payments')
 export class PaymentsController {
-    constructor(private readonly paymentsService: PaymentsService) {}
+    constructor(
+        private readonly paymentsService: PaymentsService,
+        private readonly config: Config
+    ) {}
 
     @Get('/key')
-    async getPublicKey(): Promise<any> {}
+    async getPublicKey(): Promise<any> {
+        return { key: this.config.stripePublicKey }
+    }
 
-    @Post('/setup/intent')
-    async setupIntent(): Promise<any> {
+    @Post('/intents')
+    async setupIntent(
+        @Body(new ValidationPipe()) data: UserIdInputDTO
+    ): Promise<any> {
         return await this.paymentsService.setupIntent()
     }
 
-    @Post('/payment-methods')
-    async getPaymentMethods(): Promise<any> {
+    @Delete('/intents/:id')
+    async deleteIntent(@Param('id') id: string): Promise<any> {
+        return await this.paymentsService.deleteIntent()
+    }
+
+    @Get('/methods/:id')
+    async getPaymentMethods(
+        @Param('id') paymentMethodId: string
+    ): Promise<any> {
         return await this.paymentsService.getPaymentMethods()
     }
 
-    @Post('/payment-methods/created')
-    async paymentMethodCreated(): Promise<any> {
-        return await this.paymentsService.paymentMethodCreated()
+    @Post('/methods')
+    async createPaymentMethod(
+        @Body(new ValidationPipe()) data: CreatePaymentMethodInputDTO
+    ): Promise<any> {
+        return await this.paymentsService.createPaymentMethod()
     }
 
-    @Post('/payment-methods/default')
-    async setDefaultPaymentMethod(): Promise<any> {
+    @Post('/methods/default')
+    async setDefaultPaymentMethod(
+        @Body(new ValidationPipe()) data: PaymentMethodIdDTO
+    ): Promise<any> {
         return await this.paymentsService.setDefaultPaymentMethod()
     }
 
-    @Patch('/payment-methods/default')
-    async changeDefaultPaymentMethod(): Promise<any> {
+    @Patch('/methods/default')
+    async changeDefaultPaymentMethod(
+        @Body(new ValidationPipe()) data: ChangeDefaultPaymentMethod
+    ): Promise<any> {
         return await this.paymentsService.changeDefaultPaymentMethod()
     }
 
-    @Delete('/payment-methods')
-    async deletePaymentMethod(): Promise<any> {
+    @Delete('/methods')
+    async deletePaymentMethod(
+        @Body(new ValidationPipe()) data: DeletePaymentMethodInputDTO
+    ): Promise<any> {
         return await this.paymentsService.deletePaymentMethod()
-    }
-
-    @Delete('/setup/intent')
-    async deleteIntent(): Promise<any> {
-        return await this.paymentsService.deleteIntent()
     }
 }

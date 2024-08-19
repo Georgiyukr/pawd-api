@@ -16,7 +16,7 @@ export class PaymentsService {
 
     async getPaymentMethods(): Promise<any> {}
 
-    async paymentMethodCreated(): Promise<any> {}
+    async createPaymentMethod(): Promise<any> {}
 
     async setDefaultPaymentMethod(): Promise<any> {}
 
