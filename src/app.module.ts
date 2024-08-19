@@ -5,6 +5,7 @@ import { DataServicesModule } from "./data/data-services.module";
 import { UsersModule } from "./components/users/users.module";
 import { AuthModule } from "./components/auth/auth.module";
 import { LocationsModule } from "./components/locations/locations.module";
+import { PaymentsController } from './payments/payments.controller';
 
 @Module({
     imports: [
@@ -17,5 +18,6 @@ import { LocationsModule } from "./components/locations/locations.module";
         AuthModule,
         LocationsModule,
     ],
+    controllers: [PaymentsController],
 })
 export class AppModule {}
