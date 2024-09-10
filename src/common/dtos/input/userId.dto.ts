@@ -1,8 +1,8 @@
-import { IsDefined, IsNotEmpty, IsNumber } from 'class-validator'
+import { IsDefined, IsNotEmpty, IsString } from 'class-validator'
 
 export class UserIdInputDTO {
     @IsNotEmpty()
     @IsDefined()
-    @IsNumber()
-    userId: Number
+    @IsString()
+    userId: string
 }

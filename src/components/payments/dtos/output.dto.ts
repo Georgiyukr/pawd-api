@@ -1,4 +1,4 @@
-import Stripe from 'stripe'
+import { PaymentMethod } from '../../../utils/payments-client/types'
 
 export class PublicKeyOutputDTO {
     publicKey: string
@@ -13,5 +13,5 @@ export class CanceledIntentOutputDTO {
 }
 
 export class PaymentMethodOutputDTO {
-    paymentMethod: Stripe.PaymentMethod
+    paymentMethod: PaymentMethod
 }

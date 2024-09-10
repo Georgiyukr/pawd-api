@@ -1,3 +1,20 @@
+/*
+Add terms to your website or app that state how you plan to save payment method 
+details and allow customers to opt in.
+
+include a “Save my payment method for future use” checkbox to collect consent.
+
+To charge them when they’re offline, make sure your terms include the following:
+
+1. The customer’s agreement to your initiating a payment or a series of payments on 
+their behalf for specified transactions.
+2. The anticipated timing and frequency of payments (for example, if the charges 
+are for scheduled installments, subscription payments, or unscheduled top-ups).
+3. How you determine the payment amount.
+4. Your cancellation policy, if the payment method is for a subscription service.
+
+Make sure you keep a record of your customer’s written agreement to these terms.
+*/
 import {
     Body,
     Controller,
@@ -58,10 +75,10 @@ export class PaymentsController {
     }
 
     @Post('/methods')
-    async createPaymentMethod(
+    async recordPaymentMethod(
         @Body(new ValidationPipe()) data: CreatePaymentMethodInputDTO
     ): Promise<PaymentMethodOutputDTO> {
-        return await this.paymentsService.createPaymentMethod(data)
+        return await this.paymentsService.recordPaymentMethod(data)
     }
 
     @Post('/methods/default')
