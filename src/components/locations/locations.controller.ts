@@ -7,52 +7,49 @@ import {
     Patch,
     Post,
     ValidationPipe,
-} from "@nestjs/common";
-import { CreateLocationInputDTO, UpdateLocationInputDTO } from "./dtos/inputs";
-import { LocationsService } from "./locations.service";
-import { MessageOutputDTO } from "../../common/dtos/output";
+} from '@nestjs/common'
+import { CreateLocationInputDTO, UpdateLocationInputDTO } from './dtos/inputs'
+import { LocationsService } from './locations.service'
+import { MessageOutputDTO } from '../../common/dtos/output'
 import {
     CreateLocationOutputDTO,
     GetAllLocationsOutputDTO,
     LocationOutputDTO,
-} from "./dtos/outputs";
+} from './dtos/outputs'
 
-@Controller("locations")
+@Controller('locations')
 export class LocationsController {
     constructor(private readonly locationsService: LocationsService) {}
 
-    @Get("/")
+    @Get('/')
     async getAllLocations(): Promise<
         GetAllLocationsOutputDTO | MessageOutputDTO
     > {
-        return await this.locationsService.getAllLocations();
+        return await this.locationsService.getAllLocations()
     }
 
-    @Get("/:id")
-    async getLocationById(@Param("id") id: string): Promise<LocationOutputDTO> {
-        return await this.locationsService.getLocationById(id);
+    @Get('/:id')
+    async getLocationById(@Param('id') id: string): Promise<LocationOutputDTO> {
+        return await this.locationsService.getLocationById(id)
     }
 
-    @Post("/")
+    @Post('/')
     async createLocation(
         @Body(new ValidationPipe()) createLocationDto: CreateLocationInputDTO
     ): Promise<CreateLocationOutputDTO> {
-        return await this.locationsService.createLocation(createLocationDto);
+        return await this.locationsService.createLocation(createLocationDto)
     }
 
-    @Patch("/:id")
+    @Patch('/:id')
     async updateLocation(
-        @Param("id") id: string,
+        @Param('id') id: string,
         @Body(new ValidationPipe()) updateLocationDto: UpdateLocationInputDTO
     ): Promise<LocationOutputDTO> {
-        return await this.locationsService.updateLocationById(
-            id,
-            updateLocationDto
-        );
+        return await this.locationsService.updateLocation(id, updateLocationDto)
     }
 
-    @Delete("/:id")
-    async deleteLocation(@Param("id") id: string): Promise<MessageOutputDTO> {
-        return await this.locationsService.deleteLocation(id);
+    @Delete('/:id')
+    async deleteLocation(@Param('id') id: string): Promise<MessageOutputDTO> {
+        return await this.locationsService.deleteLocation(id)
     }
 }
