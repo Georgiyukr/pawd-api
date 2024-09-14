@@ -5,8 +5,9 @@ import Stripe from 'stripe'
 
 @Module({
     providers: [
+        Config,
         {
-            provide: StripeService,
+            provide: Stripe,
             inject: [Config],
             useFactory: (config: Config) => {
                 return new Stripe(config.stripeSecretKey, {
@@ -15,7 +16,8 @@ import Stripe from 'stripe'
                 })
             },
         },
+        StripeService,
     ],
-    exports: [StripeService],
+    exports: [StripeService, Stripe],
 })
 export class StripeModule {}

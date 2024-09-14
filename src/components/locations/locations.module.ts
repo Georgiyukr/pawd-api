@@ -9,7 +9,7 @@ import { CommonProvidersModule } from 'src/common/providers/providers.modules'
 @Module({
     imports: [DataServicesModule, UtilsModule, CommonProvidersModule],
     exports: [LocationsService],
-    providers: [UtilsModule, LocationsService, LocationsRepository],
+    providers: [LocationsService, LocationsRepository],
     controllers: [LocationsController],
 })
 export class LocationsModule {}

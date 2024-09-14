@@ -14,7 +14,7 @@ import { RepositoriesModule } from '../../data/repositories/repositories.module'
         RepositoriesModule,
     ],
     exports: [UsersService],
-    providers: [UsersService, UtilsModule, PaymentsModule],
+    providers: [UsersService, PaymentsModule],
     controllers: [UsersController],
 })
 export class UsersModule {}

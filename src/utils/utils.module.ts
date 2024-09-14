@@ -6,20 +6,14 @@ import { EncryptionService } from './encryption.service'
 import { PaymentsClientModule } from './payments-client/payments.client.module'
 
 @Module({
-    imports: [EmailModule],
+    imports: [EmailModule, PaymentsClientModule],
     exports: [
-        Config,
-        HashService,
         PaymentsClientModule,
         EmailModule,
-        EncryptionService,
-    ],
-    providers: [
         Config,
         HashService,
-        PaymentsClientModule,
-        EmailModule,
         EncryptionService,
     ],
+    providers: [Config, HashService, EncryptionService],
 })
 export class UtilsModule {}

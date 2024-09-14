@@ -32,7 +32,6 @@ export abstract class PaymentsClientService {
     abstract createCustomer(
         customer: CreatePaymentCustomer
     ): Promise<PaymentCustomer>
-
     abstract createSetupIntent(paymentCustomerId: string): Promise<SetupIntent>
     abstract createPaymentIntent(
         data: PaymentIntentCharge

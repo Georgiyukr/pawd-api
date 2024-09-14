@@ -18,9 +18,9 @@ Make sure you keep a record of your customer’s written agreement to these term
 
 import { CreatePaymentMethod, DeletePaymentMethod } from './types'
 import { UsersRepository } from '../../data/repositories/users.repository'
-import { NotFoundException } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { User } from '../../common/entities'
-import { PaymentsClientService } from 'src/utils/payments-client/payments.client.service'
+import { PaymentsClientService } from '../../utils/payments-client/payments.client.service'
 import {
     CreatePaymentCustomer,
     PaymentCustomer,
@@ -31,6 +31,7 @@ import {
     SetupIntent,
 } from '../../utils/payments-client/types'
 
+@Injectable()
 export class PaymentsService {
     constructor(
         private readonly usersRepository: UsersRepository,
@@ -70,7 +71,6 @@ export class PaymentsService {
     async getPaymentMethods(paymentCustomerId: string): Promise<any> {
         const paymentMethods =
             await this.paymentsClient.getPaymentMethods(paymentCustomerId)
-        console.log('Payment Methods', paymentMethods)
         return {
             paymentMethods: paymentMethods.data.sort(
                 (a, b) => 0.5 - Math.random()
@@ -124,7 +124,7 @@ export class PaymentsService {
     }
 
     async deletePaymentMethod(data: DeletePaymentMethod): Promise<any> {
-        this.paymentsClient.detachPaymentMethod(data.paymentMethodId)
+        await this.paymentsClient.detachPaymentMethod(data.paymentMethodId)
         if (data.defaultPaymentMethod) {
             const paymentMethods = await this.paymentsClient.getPaymentMethods(
                 data.paymentCustomerId
