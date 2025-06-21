@@ -9,7 +9,9 @@ import { PaymentsModule } from './components/payments/payments.module'
 
 @Module({
     imports: [
-        ConfigModule.forRoot({ envFilePath: `${process.env.NODE_ENV}.env` }),
+        ConfigModule.forRoot({
+            envFilePath: process.env.NODE_ENV && `${process.env.NODE_ENV}.env`,
+        }),
         MongooseModule.forRoot(
             `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0.8zakhvw.mongodb.net/${process.env.MONGO_DATABASE_NAME}?retryWrites=true&w=majority`
         ),
