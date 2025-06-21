@@ -1,9 +1,9 @@
-import { Module } from "@nestjs/common";
-import { MailerModule } from "@nestjs-modules/mailer";
-import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
-import { Config } from "../../../utils/config";
-import * as path from "path";
-import { NodeMailerService } from "./nodemailer.service";
+import { Module } from '@nestjs/common'
+import { MailerModule } from '@nestjs-modules/mailer'
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter'
+import { Config } from '../../../utils/config'
+import * as path from 'path'
+import { NodeMailerService } from './nodemailer.service'
 
 @Module({
     imports: [
@@ -12,8 +12,8 @@ import { NodeMailerService } from "./nodemailer.service";
             extraProviders: [Config],
             useFactory: (config: Config) => ({
                 transport: {
-                    service: "gmail",
-                    host: "smtp.gmail.com",
+                    service: 'gmail',
+                    host: 'smtp.gmail.com',
                     auth: {
                         user: config.pawdEmail,
                         pass: config.emailPassword,
@@ -21,7 +21,7 @@ import { NodeMailerService } from "./nodemailer.service";
                 },
                 defaults: { from: config.pawdEmail },
                 template: {
-                    dir: path.join(__dirname, "..", "templates"),
+                    dir: path.join(__dirname, '..', 'templates'),
                     adapter: new HandlebarsAdapter(),
                     options: { strict: true },
                 },

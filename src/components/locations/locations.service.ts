@@ -121,7 +121,6 @@ export class LocationsService {
             locationCodesBuffer.toString()
         )
 
-        console.log()
         return locationCodes.split(',')
     }
 
