@@ -5,7 +5,7 @@ on:
             - main
             - 'feature/**'
 env:
-    IMAGE: ${{ secrets.GCP_REGION }}-docker.pkg.dev/${GCP_PROJECT_ID}/pawd-api/pawd-dev-api:latest
+    IMAGE: ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ GCP_PROJECT_ID }}/pawd-api/pawd-dev-api:latest
 jobs:
     build-deploy-dev:
         name: Build and Deploy to dev
@@ -32,9 +32,6 @@ jobs:
 
             - name: Set up Cloud SDK
               uses: 'google-github-actions/setup-gcloud@v2'
-
-            - name: Check my secrets
-              run: echo "Checking region ${{ secrets.GCP_REGION }} and ${GCP_PROJECT_ID}"
 
             - name: Configure Docker Auth
               run: gcloud auth configure-docker ${{ secrets.GCP_REGION }}-docker.pkg.dev
