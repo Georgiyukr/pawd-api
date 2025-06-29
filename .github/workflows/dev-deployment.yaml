@@ -48,5 +48,6 @@ jobs:
                   --image $IMAGE \
                   --allow-unauthenticated \
                   --platform managed \
-                  --region=${{ secrets.GCP_REGION }}
+                  --region ${{ secrets.GCP_REGION }}
                   --min-instances 1
+                  --service-account=${{ secrets.GCP_PROJECT_ID }}@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com
