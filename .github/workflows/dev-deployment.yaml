@@ -10,6 +10,7 @@ jobs:
     build-deploy-dev:
         name: Build and Deploy to dev
         runs-on: ubuntu-latest
+        environment: dev
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
