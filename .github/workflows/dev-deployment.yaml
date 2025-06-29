@@ -10,42 +10,42 @@ jobs:
     build-deploy-dev:
         name: Build and Deploy to dev
         runs-on: ubuntu-latest
-    steps:
-        - name: Checkout code
-          uses: actions/checkout@v4
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
 
-        - name: Setup Node
-          uses: actions/setup-node@v4
-          with:
-              node-version: 20
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
 
-        - name: Install dependencies
-          run: npm install
+            - name: Install dependencies
+              run: npm install
 
-        - name: Run tests
-          run: npm run test
+            - name: Run tests
+              run: npm run test
 
-        - name: Authenticate to Google Cloud
-          uses: 'google-github-actions/auth@v2'
-          with:
-              credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_PAWD_DEV }}
+            - name: Authenticate to Google Cloud
+              uses: 'google-github-actions/auth@v2'
+              with:
+                  credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_PAWD_DEV }}
 
-        - name: Set up Cloud SDK
-          uses: 'google-github-actions/setup-gcloud@v2'
+            - name: Set up Cloud SDK
+              uses: 'google-github-actions/setup-gcloud@v2'
 
-        - name: Configure Docker Auth
-          run: gcloud auth configure-docker us-east1-docker.pkg.dev
+            - name: Configure Docker Auth
+              run: gcloud auth configure-docker us-east1-docker.pkg.dev
 
-        - name: Build and Push a Docker image
-          run: |
-              docker build . --tag $IMAGE
-              docker push $IMAGE
+            - name: Build and Push a Docker image
+              run: |
+                  docker build . --tag $IMAGE
+                  docker push $IMAGE
 
-        - name: Deploy the image
-          run: |
-              gcloud run deploy ${{ secrets.CLOUD_RUN_SERVICE }}
-              --image $IMAGE
-              --allow-unauthenticated \
-              --platform managed \
-              --region=${{ secrets.GCP_REGION }}
-              --min-instances 1
+            - name: Deploy the image
+              run: |
+                  gcloud run deploy ${{ secrets.CLOUD_RUN_SERVICE }}
+                  --image $IMAGE
+                  --allow-unauthenticated \
+                  --platform managed \
+                  --region=${{ secrets.GCP_REGION }}
+                  --min-instances 1
