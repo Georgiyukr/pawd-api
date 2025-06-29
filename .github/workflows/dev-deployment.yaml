@@ -44,8 +44,8 @@ jobs:
 
             - name: Deploy the image
               run: |
-                  gcloud run deploy ${{ secrets.CLOUD_RUN_SERVICE }}
-                  --image $IMAGE
+                  gcloud run deploy ${{ secrets.CLOUD_RUN_SERVICE }} \
+                  --image $IMAGE \
                   --allow-unauthenticated \
                   --platform managed \
                   --region=${{ secrets.GCP_REGION }}
