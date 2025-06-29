@@ -33,8 +33,8 @@ jobs:
             - name: Set up Cloud SDK
               uses: 'google-github-actions/setup-gcloud@v2'
 
-            - name: Check my region secret
-              run: echo "Checking region ${{ secrets.GCP_REGION }}"
+            - name: Check my secrets
+              run: echo "Checking region ${{ secrets.GCP_REGION }} and ${GCP_PROJECT_ID}"
 
             - name: Configure Docker Auth
               run: gcloud auth configure-docker ${{ secrets.GCP_REGION }}-docker.pkg.dev
