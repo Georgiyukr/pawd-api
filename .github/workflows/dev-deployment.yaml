@@ -5,7 +5,7 @@ on:
             - main
             - 'feature/**'
 env:
-    IMAGE: ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ GCP_PROJECT_ID }}/pawd-api/pawd-dev-api:latest
+    IMAGE: ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/pawd-api/pawd-dev-api:latest
 jobs:
     build-deploy-dev:
         name: Build and Deploy to dev
