@@ -47,7 +47,26 @@ jobs:
                   gcloud run deploy ${{ secrets.CLOUD_RUN_SERVICE }} \
                   --image $IMAGE \
                   --allow-unauthenticated \
-                  --platform managed \
-                  --region ${{ secrets.GCP_REGION }}
-                  --min-instances 1
-                  --service-account=${{ secrets.GCP_PROJECT_ID }}@${{ secrets.GCP_PROJECT_ID }}.iam.gserviceaccount.com
+                  --platform=managed \
+                  --region=${{ secrets.GCP_REGION }}
+                  --min-instances=1 \
+                  --service-account=${{ secrets.SA_NAME }}
+                  --set-secrets="ACCESS_TOKEN_EXPIRATION=ACCESS_TOKEN_EXPIRATION,\
+                  ACCESS_TOKEN_PRIVATE_KEY=ACCESS_TOKEN_PRIVATE_KEY,\
+                  ACCESS_TOKEN_PUBLIC_KEY=ACCESS_TOKEN_PUBLIC_KEY,\
+                  AUDIENCE=AUDIENCE,\
+                  CRYPTO_ALGORITHM=CRYPTO_ALGORITHM,\
+                  CRYPTO_IV=CRYPTO_IV,\
+                  CRYPTO_KEY=CRYPTO_KEY,\
+                  EMAIL_PASSWORD=EMAIL_PASSWORD,\
+                  ISSUER=ISSUER,\
+                  JWT_ALGORITHM=JWT_ALGORITHM,\
+                  MONGO_DATABASE_NAME=MONGO_DATABASE_NAME,\
+                  MONGO_PASSWORD=MONGO_PASSWORD,\
+                  MONGO_USERNAME=MONGO_USERNAME,\
+                  PAWD_EMAIL=PAWD_EMAIL,\
+                  REFRESH_TOKEN_EXPIRATION=REFRESH_TOKEN_EXPIRATION,\
+                  REFRESH_TOKEN_PRIVATE_KEY=REFRESH_TOKEN_PRIVATE_KEY,\
+                  REFRESH_TOKEN_PUBLIC_KEY=REFRESH_TOKEN_PUBLIC_KEY,\
+                  STRIPE_PUBLIC_KEY=STRIPE_PUBLIC_KEY,\
+                  STRIPE_SECRET_KEY=STRIPE_SECRET_KEY"
