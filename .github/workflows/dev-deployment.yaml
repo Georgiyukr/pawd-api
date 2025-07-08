@@ -48,7 +48,7 @@ jobs:
                   --image $IMAGE \
                   --allow-unauthenticated \
                   --platform=managed \
-                  --region=${{ secrets.GCP_REGION }}
+                  --region=${{ secrets.GCP_REGION }} \
                   --min-instances=1 \
                   --service-account=${{ secrets.SA_NAME }}
                   --set-secrets="ACCESS_TOKEN_EXPIRATION=ACCESS_TOKEN_EXPIRATION:latest,\
