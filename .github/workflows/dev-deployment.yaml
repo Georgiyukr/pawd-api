@@ -45,13 +45,13 @@ jobs:
             - name: Deploy the image
               run: |
                   gcloud run deploy ${{ secrets.CLOUD_RUN_SERVICE }} \
-                  --image $IMAGE \
-                  --allow-unauthenticated \
-                  --platform=managed \
-                  --region=${{ secrets.GCP_REGION }} \
-                  --min-instances=1 \
-                  --service-account=${{ secrets.SA_NAME }}
-                  --set-secrets="ACCESS_TOKEN_EXPIRATION=ACCESS_TOKEN_EXPIRATION:latest,\
+                    --image $IMAGE \
+                    --allow-unauthenticated \
+                    --platform=managed \
+                    --region=${{ secrets.GCP_REGION }} \
+                    --min-instances=1 \
+                    --service-account=${{ secrets.SA_NAME }} \
+                    --set-secrets="ACCESS_TOKEN_EXPIRATION=ACCESS_TOKEN_EXPIRATION:latest,\
                   ACCESS_TOKEN_PRIVATE_KEY=ACCESS_TOKEN_PRIVATE_KEY:latest,\
                   ACCESS_TOKEN_PUBLIC_KEY=ACCESS_TOKEN_PUBLIC_KEY:latest,\
                   AUDIENCE=AUDIENCE:latest,\
