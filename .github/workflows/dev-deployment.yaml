@@ -47,6 +47,8 @@ jobs:
                   gcloud run deploy ${{ secrets.CLOUD_RUN_SERVICE }} \
                     --image $IMAGE \
                     --allow-unauthenticated \
+                    --member="allUsers" \
+                    --role="roles/run.invoker" \
                     --platform=managed \
                     --region=${{ secrets.GCP_REGION }} \
                     --min-instances=1 \
