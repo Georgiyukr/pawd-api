@@ -66,7 +66,6 @@ jobs:
                   STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest"
 
                   gcloud run deploy ${{ secrets.CLOUD_RUN_SERVICE }} \
-                    --no-invoker-iam-check \
                     --image $IMAGE \
                     --allow-unauthenticated \
                     --platform=managed \
