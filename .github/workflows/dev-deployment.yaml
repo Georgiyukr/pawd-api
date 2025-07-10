@@ -79,24 +79,25 @@ jobs:
               with:
                   service: ${{ secrets.CLOUD_RUN_SERVICE }}
                   image: $IMAGE
-                  env_vars: |-
+                  region: ${{ secrets.GCP_REGION }}
+                  env_vars: |
                       PAWD_EMAIL=PAWD_EMAIL:latest
-                  secrets: |-
-                      ACCESS_TOKEN_EXPIRATION=ACCESS_TOKEN_EXPIRATION:latest \,
-                      ACCESS_TOKEN_PRIVATE_KEY=ACCESS_TOKEN_PRIVATE_KEY:latest \,
-                      ACCESS_TOKEN_PUBLIC_KEY=ACCESS_TOKEN_PUBLIC_KEY:latest \,
-                      AUDIENCE=AUDIENCE:latest \,
-                      CRYPTO_ALGORITHM=CRYPTO_ALGORITHM:latest \,
-                      CRYPTO_IV=CRYPTO_IV:latest \,
-                      CRYPTO_KEY=CRYPTO_KEY:latest \,
-                      EMAIL_PASSWORD=EMAIL_PASSWORD:latest \,
-                      ISSUER=ISSUER:latest \,
-                      JWT_ALGORITHM=JWT_ALGORITHM:latest \,
-                      MONGO_DATABASE_NAME=MONGO_DATABASE_NAME:latest \,
-                      MONGO_PASSWORD=MONGO_PASSWORD:latest \,
-                      MONGO_USERNAME=MONGO_USERNAME:latest \,
-                      REFRESH_TOKEN_EXPIRATION=REFRESH_TOKEN_EXPIRATION:latest \,
-                      REFRESH_TOKEN_PRIVATE_KEY=REFRESH_TOKEN_PRIVATE_KEY:latest \,
-                      REFRESH_TOKEN_PUBLIC_KEY=REFRESH_TOKEN_PUBLIC_KEY:latest \,
-                      STRIPE_PUBLIC_KEY=STRIPE_PUBLIC_KEY:latest \,
+                  secrets: |
+                      ACCESS_TOKEN_EXPIRATION=ACCESS_TOKEN_EXPIRATION:latest
+                      ACCESS_TOKEN_PRIVATE_KEY=ACCESS_TOKEN_PRIVATE_KEY:latest
+                      ACCESS_TOKEN_PUBLIC_KEY=ACCESS_TOKEN_PUBLIC_KEY:latest
+                      AUDIENCE=AUDIENCE:latest
+                      CRYPTO_ALGORITHM=CRYPTO_ALGORITHM:latest
+                      CRYPTO_IV=CRYPTO_IV:latest
+                      CRYPTO_KEY=CRYPTO_KEY:latest
+                      EMAIL_PASSWORD=EMAIL_PASSWORD:latest
+                      ISSUER=ISSUER:latest
+                      JWT_ALGORITHM=JWT_ALGORITHM:latest
+                      MONGO_DATABASE_NAME=MONGO_DATABASE_NAME:latest
+                      MONGO_PASSWORD=MONGO_PASSWORD:latest
+                      MONGO_USERNAME=MONGO_USERNAME:latest
+                      REFRESH_TOKEN_EXPIRATION=REFRESH_TOKEN_EXPIRATION:latest
+                      REFRESH_TOKEN_PRIVATE_KEY=REFRESH_TOKEN_PRIVATE_KEY:latest
+                      REFRESH_TOKEN_PUBLIC_KEY=REFRESH_TOKEN_PUBLIC_KEY:latest
+                      STRIPE_PUBLIC_KEY=STRIPE_PUBLIC_KEY:latest
                       STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest"
