@@ -66,6 +66,7 @@ jobs:
                   STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest"
 
                   gcloud run deploy ${{ secrets.CLOUD_RUN_SERVICE }} \
+                    --no-invoker-iam-check \
                     --image $IMAGE \
                     --allow-unauthenticated \
                     --platform=managed \
@@ -74,10 +75,10 @@ jobs:
                     --service-account=${{ secrets.SA_NAME }} \
                     --set-secrets=$GCP_SECRETS
 
-            - name: Allow unauthenticated access
-              run: |
-                  gcloud run services add-iam-policy-binding ${{ secrets.CLOUD_RUN_SERVICE }} \
-                    --region=${{ secrets.GCP_REGION }} \
-                    --platform=managed \
-                    --member="allUsers" \
-                    --role="roles/run.invoker"
+            # - name: Allow unauthenticated access
+            #   run: |
+            #       gcloud run services add-iam-policy-binding ${{ secrets.CLOUD_RUN_SERVICE }} \
+            #         --region=${{ secrets.GCP_REGION }} \
+            #         --platform=managed \
+            #         --member="allUsers" \
+            #         --role="roles/run.invoker"
