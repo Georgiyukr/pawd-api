@@ -44,16 +44,8 @@ jobs:
 
             - name: Deploy the image
               run: |
-                  gcloud run deploy ${{ secrets.CLOUD_RUN_SERVICE }} \
-                    --image $IMAGE \
-                    --allow-unauthenticated \
-                    --member="allUsers" \
-                    --role="roles/run.invoker" \
-                    --platform=managed \
-                    --region=${{ secrets.GCP_REGION }} \
-                    --min-instances=1 \
-                    --service-account=${{ secrets.SA_NAME }} \
-                    --set-secrets="ACCESS_TOKEN_EXPIRATION=ACCESS_TOKEN_EXPIRATION:latest,\
+                  GCP_SECRETS="\
+                  ACCESS_TOKEN_EXPIRATION=ACCESS_TOKEN_EXPIRATION:latest,\
                   ACCESS_TOKEN_PRIVATE_KEY=ACCESS_TOKEN_PRIVATE_KEY:latest,\
                   ACCESS_TOKEN_PUBLIC_KEY=ACCESS_TOKEN_PUBLIC_KEY:latest,\
                   AUDIENCE=AUDIENCE:latest,\
@@ -72,3 +64,20 @@ jobs:
                   REFRESH_TOKEN_PUBLIC_KEY=REFRESH_TOKEN_PUBLIC_KEY:latest,\
                   STRIPE_PUBLIC_KEY=STRIPE_PUBLIC_KEY:latest,\
                   STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest"
+
+                  gcloud run deploy ${{ secrets.CLOUD_RUN_SERVICE }} \
+                    --image $IMAGE \
+                    --allow-unauthenticated \
+                    --platform=managed \
+                    --region=${{ secrets.GCP_REGION }} \
+                    --min-instances=1 \
+                    --service-account=${{ secrets.SA_NAME }} \
+                    --set-secrets=$GCP_SECRETS
+
+            - name: Allow unauthenticated access
+              run: |
+                  gcloud run services add-iam-policy-binding ${{ secrets.CLOUD_RUN_SERVICE }} \
+                    --region=${{ secrets.GCP_REGION }} \
+                    --platform=managed \
+                    --member="allUsers" \
+                    --role="roles/run.invoker"
