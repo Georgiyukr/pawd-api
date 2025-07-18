@@ -1,6 +1,6 @@
-import { LocationsService } from './locations.service'
-import { Location } from '../../common/entities'
-import { ErrorMessages } from '../../common/constants'
+import { LocationsService } from '../locations.service'
+import { Location } from '../../../common/entities'
+import { ErrorMessages } from '../../../common/constants'
 import { HttpException, HttpStatus } from '@nestjs/common'
 import * as QRcode from 'qrcode'
 
