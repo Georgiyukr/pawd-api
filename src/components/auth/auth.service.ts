@@ -17,7 +17,7 @@ import {
 import { HashService } from '../../utils/hash.service'
 import { JwtService } from './jwt.service'
 import { EmailService } from '../../utils/email/email.service'
-import { Messages } from '../../common/constants'
+import { ErrorMessages } from '../../common/constants'
 
 interface Tokens {
     accessToken: string
@@ -97,7 +97,7 @@ export class AuthService {
         user = await this.userService.updateUserById(id, {
             refreshToken: null,
         })
-        return { message: Messages.default.logout }
+        return { message: ErrorMessages.logout }
     }
 
     async generatePasswordResetToken(
@@ -146,6 +146,6 @@ export class AuthService {
             )
         }
         await this.emailService.sendUsernameEmail(user)
-        return { message: Messages.default.forgotUsername }
+        return { message: ErrorMessages.forgotUsername }
     }
 }
