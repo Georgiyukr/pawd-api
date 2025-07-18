@@ -6,6 +6,7 @@ import { UsersModule } from './components/users/users.module'
 import { AuthModule } from './components/auth/auth.module'
 import { LocationsModule } from './components/locations/locations.module'
 import { PaymentsModule } from './components/payments/payments.module'
+import { GcpStorageModule } from './gcp/storage/storage.module'
 
 @Module({
     imports: [
@@ -20,6 +21,7 @@ import { PaymentsModule } from './components/payments/payments.module'
         AuthModule,
         LocationsModule,
         PaymentsModule,
+        GcpStorageModule,
     ],
 })
 export class AppModule {}

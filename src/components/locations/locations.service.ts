@@ -3,17 +3,21 @@ import { CreateLocation, GetAllLocations, UpdateLocationParams } from './types'
 import { Location } from '../../common/entities'
 import { LocationsRepository } from '../../data/repositories/locations.repository'
 import * as QRcode from 'qrcode'
-import { Messages } from '../../common/constants'
+import { ErrorMessages, Constants } from '../../common/constants'
 import { Message } from '../../common/types'
 import { FilesystemService } from '../../common/providers/filesystem.service'
 import { EncryptionService } from '../../utils/encryption.service'
+import { GcpStorageService } from '../../gcp/storage/storage.service'
+import { Config } from '../../utils/config'
 
 @Injectable()
 export class LocationsService {
     constructor(
         private readonly locationsRepository: LocationsRepository,
         private readonly filesystemService: FilesystemService,
-        private readonly encryptionService: EncryptionService
+        private readonly encryptionService: EncryptionService,
+        private readonly gcpStorageService: GcpStorageService,
+        private readonly config: Config
     ) {}
 
     async getAllLocations(): Promise<GetAllLocations | Message> {
@@ -47,11 +51,22 @@ export class LocationsService {
         const locationCode = await this.getUniqueLocationCode()
         location = this.buildLocation(data, locationCode)
         location = await this.locationsRepository.createLocation(location)
-        let qrcode = await QRcode.toDataURL(location.id)
+        let qrCodeBase64 = await QRcode.toDataURL(location.id)
+        const base64Data = qrCodeBase64.replace(/^data:image\/png;base64,/, '')
+        const buffer = Buffer.from(base64Data, 'base64')
+        const gcpFileUrl = await this.gcpStorageService.uploadFile(
+            this.config.gcpBucketName,
+            Constants.gcpBucketQrCodesFolder +
+                location.id +
+                Constants.imageFormat,
+            buffer,
+            Constants.imageContentType
+        )
+
         location = await this.locationsRepository.updateLocationById(
             location.id,
             {
-                qrCodeBase64: qrcode,
+                qrCodeImageUrl: gcpFileUrl,
             }
         )
         return location
@@ -78,7 +93,7 @@ export class LocationsService {
                 `Location with id ${id} does not exists.`,
                 HttpStatus.NOT_FOUND
             )
-        return { message: Messages.default.locationDeleted }
+        return { message: ErrorMessages.locationDeleted }
     }
 
     // need to figure out a backup plan if location-codes.txt file gets deleted.
