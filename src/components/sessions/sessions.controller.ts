@@ -1,26 +1,49 @@
-import { Injectable } from '@nestjs/common'
+import {
+    Body,
+    Controller,
+    Injectable,
+    Param,
+    Post,
+    ValidationPipe,
+} from '@nestjs/common'
 import { SessionsService } from './sessions.service'
+import { StartSessionDTO } from './dtos/inputs/startSession.dto'
 
-@Injectable()
+@Controller('sessions')
 export class SessionsController {
     constructor(private readonly sessionsService: SessionsService) {}
 
-    async startSession() {
-        return this.sessionsService.startSession()
+    @Post('/activate/:locationId')
+    async startSession(
+        @Param('locationId') locationId: string,
+        @Body(new ValidationPipe()) startSessionDto: StartSessionDTO
+    ) {
+        return await this.sessionsService.startSession(
+            locationId,
+            startSessionDto
+        )
     }
-
-    async stopSession() {
+    @Post('/deactivate/:locationId')
+    async stopSession(
+        @Param('locationId') locationId: string,
+        @Body(new ValidationPipe()) stopSessionDto: any
+    ) {
         return this.sessionsService.stopSession()
     }
 
-    async addPawdImageToSession() {
-        return this.sessionsService.addImage()
+    @Post('/images')
+    async addPawdImageToSession(
+        @Body(new ValidationPipe()) addPawdImageDto: any
+    ) {
+        return this.sessionsService.addPawdImageToSession()
     }
 
-    async submitFeedback() {
+    @Post('/feedback')
+    async submitFeedback(@Body(new ValidationPipe()) submitFeedbackDto: any) {
         return this.sessionsService.submitFeedback()
     }
 
+    @Post('/history')
     async getSessionsHistory() {
         return this.sessionsService.getSessionsHistory()
     }

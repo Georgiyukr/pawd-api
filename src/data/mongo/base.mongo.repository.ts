@@ -1,19 +1,19 @@
-import { Document, FilterQuery, Model } from "mongoose";
-import * as Mongoose from "mongoose";
-import { BaseRepositoryInterface } from "../base.interface.repository";
-import { BaseMongoQueryOptions, DeleteResult } from "./types";
+import { Document, FilterQuery, Model } from 'mongoose'
+import * as Mongoose from 'mongoose'
+import { BaseRepositoryInterface } from '../base.interface.repository'
+import { BaseMongoQueryOptions, DeleteResult } from './types'
 import {
     formatSingleResponse,
     formatSingleResponseWithNoPassword,
     formatArrayResponse,
-} from "./formatters";
+} from './formatters'
 
 interface BaseMongoRepositoryInterface<T> extends BaseRepositoryInterface<T> {}
 
 export class BaseMongoRepository<T> implements BaseMongoRepositoryInterface<T> {
-    private entity: Model<T>;
+    private entity: Model<T>
     constructor(entity: Model<T>) {
-        this.entity = entity;
+        this.entity = entity
     }
 
     async getAll(options?: BaseMongoQueryOptions): Promise<T[]> {
@@ -22,8 +22,8 @@ export class BaseMongoRepository<T> implements BaseMongoRepositoryInterface<T> {
                   .find()
                   .populate(options.populate)
                   .select(options.select)
-            : await this.entity.find();
-        return formatArrayResponse(doc);
+            : await this.entity.find()
+        return formatArrayResponse(doc)
     }
 
     async get(filter: any, options?: BaseMongoQueryOptions): Promise<T> {
@@ -32,27 +32,27 @@ export class BaseMongoRepository<T> implements BaseMongoRepositoryInterface<T> {
                   .findOne(filter)
                   .populate(options.populate)
                   .select(options.select)) as Document)
-            : ((await this.entity.findOne(filter)) as Document);
-        if (!doc) return null;
-        return formatSingleResponse(doc);
+            : ((await this.entity.findOne(filter)) as Document)
+        if (!doc) return null
+        return formatSingleResponse(doc)
     }
 
     async getById(id: string, options?: BaseMongoQueryOptions): Promise<T> {
-        const _id = new Mongoose.Types.ObjectId(id);
+        const _id = new Mongoose.Types.ObjectId(id)
         const doc: Document = options
             ? ((await this.entity
                   .findById(_id)
                   .populate(options.populate)
                   .select(options.select)) as Document)
-            : ((await this.entity.findById(id)) as Document);
-        if (!doc) return null;
-        return formatSingleResponse(doc);
+            : ((await this.entity.findById(id)) as Document)
+        if (!doc) return null
+        return formatSingleResponse(doc)
     }
 
     async create(data: T): Promise<T> {
-        const model = new this.entity(data);
-        const doc: Document = await model.save(data);
-        return formatSingleResponseWithNoPassword(doc);
+        const model = new this.entity(data)
+        const doc: Document = await model.save(data)
+        return formatSingleResponseWithNoPassword(doc)
     }
 
     async update(
@@ -63,26 +63,31 @@ export class BaseMongoRepository<T> implements BaseMongoRepositoryInterface<T> {
             filter,
             update,
             { new: true }
-        );
-        return formatSingleResponseWithNoPassword(doc);
+        )
+        return formatSingleResponseWithNoPassword(doc)
     }
 
     async updateById(id: string, update: T): Promise<T> {
-        const _id = new Mongoose.Types.ObjectId(id);
+        const _id = new Mongoose.Types.ObjectId(id)
         const doc: Document = await this.entity.findOneAndUpdate(
             { _id },
             update,
             { new: true }
-        );
-        return formatSingleResponseWithNoPassword(doc);
+        )
+        return formatSingleResponseWithNoPassword(doc)
     }
 
     async delete(data: T): Promise<DeleteResult> {
-        return await this.entity.deleteMany(data);
+        return await this.entity.deleteMany(data)
     }
 
     async deleteById(id: string, options: Mongoose.QueryOptions): Promise<T> {
-        const _id = new Mongoose.Types.ObjectId(id);
-        return await this.entity.findByIdAndRemove(_id, options);
+        const _id = new Mongoose.Types.ObjectId(id)
+        return await this.entity.findByIdAndRemove(_id, options)
+    }
+
+    async saveEntity(entity: T & Document): Promise<T> {
+        const savedEntity = await entity.save()
+        return formatSingleResponseWithNoPassword(savedEntity)
     }
 }

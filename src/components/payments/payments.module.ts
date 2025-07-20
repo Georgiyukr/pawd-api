@@ -5,11 +5,17 @@ import { PaymentsController } from './payments.controller'
 import { PaymentsClientModule } from '../../utils/payments-client/payments.client.module'
 import { UsersRepository } from '../../data/repositories/users.repository'
 import { DataServicesModule } from '../../data/data-services.module'
+import { RepositoriesModule } from '../../data/repositories/repositories.module'
 
 @Module({
-    imports: [UtilsModule, DataServicesModule, PaymentsClientModule],
-    providers: [PaymentsService, UsersRepository],
+    imports: [
+        UtilsModule,
+        DataServicesModule,
+        PaymentsClientModule,
+        RepositoriesModule,
+    ],
     exports: [PaymentsService],
+    providers: [PaymentsService],
     controllers: [PaymentsController],
 })
 export class PaymentsModule {}

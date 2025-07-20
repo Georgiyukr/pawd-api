@@ -3,13 +3,18 @@ import { DataServicesModule } from 'src/data/data-services.module'
 import { UtilsModule } from 'src/utils/utils.module'
 import { LocationsService } from './locations.service'
 import { LocationsController } from './locations.controller'
-import { LocationsRepository } from '../../data/repositories/locations.repository'
-import { CommonProvidersModule } from 'src/common/providers/providers.modules'
+import { CommonProvidersModule } from '../../common/providers/providers.modules'
+import { RepositoriesModule } from '../../data/repositories/repositories.module'
 
 @Module({
-    imports: [DataServicesModule, UtilsModule, CommonProvidersModule],
+    imports: [
+        UtilsModule,
+        DataServicesModule,
+        CommonProvidersModule,
+        RepositoriesModule,
+    ],
     exports: [LocationsService],
-    providers: [LocationsService, LocationsRepository],
+    providers: [LocationsService],
     controllers: [LocationsController],
 })
 export class LocationsModule {}

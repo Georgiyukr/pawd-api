@@ -1,12 +1,32 @@
 import { Injectable } from '@nestjs/common'
+import { StartSession } from './types'
+import { Location, User } from '../../common/entities'
+import { LocationsService } from '../locations/locations.service'
+import { UsersService } from '../users/users.service'
+import { LocationsRepository } from '../../data/repositories/locations.repository'
+import { UsersRepository } from '../../data/repositories/users.repository'
 
 @Injectable()
 export class SessionsService {
-    constructor() {}
+    constructor(
+        private readonly locationService: LocationsService,
+        private readonly userService: UsersService,
+        private readonly locationsRepository: LocationsRepository,
+        private readonly usersRepository: UsersRepository
+    ) {}
 
-    async startSession() {
-        // Logic to start a session
-        return { message: 'Session started' }
+    async startSession(locationId: string, data: StartSession) {
+        const location: Location =
+            await this.locationService.getLocationById(locationId)
+        const user: User = await this.userService.getUserById(data.userId)
+        location.occupied = true
+        location.user = data.userId
+        location.startTime = data.startTime
+        location.startDate = data.startDate
+        user.locationInUse = locationId
+        this.locationsRepository.saveLocation(location)
+        this.usersRepository.saveUser(user)
+        return location
     }
 
     async stopSession() {
@@ -29,7 +49,7 @@ export class SessionsService {
         return { message: 'Location data reset' }
     }
 
-    async addImage() {
+    async addPawdImageToSession() {
         // Logic to add a Pawd image to the session
         return { message: 'Pawd image added to session' }
     }

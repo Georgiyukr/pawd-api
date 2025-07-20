@@ -8,13 +8,13 @@ import { RepositoriesModule } from '../../data/repositories/repositories.module'
 
 @Module({
     imports: [
-        DataServicesModule,
         UtilsModule,
+        DataServicesModule,
         PaymentsModule,
         RepositoriesModule,
     ],
     exports: [UsersService],
-    providers: [UsersService, PaymentsModule],
+    providers: [UsersService],
     controllers: [UsersController],
 })
 export class UsersModule {}

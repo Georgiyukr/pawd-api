@@ -28,4 +28,8 @@ export class UsersRepository {
     async getUserById(id: string, options = undefined): Promise<User> {
         return this.dataServices.users.getById(id, options)
     }
+
+    async saveUser(user: User): Promise<User> {
+        return this.dataServices.users.saveEntity(user)
+    }
 }

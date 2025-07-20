@@ -29,4 +29,7 @@ export class LocationsRepository {
     async deleteLocationById(id): Promise<Location | unknown> {
         return await this.dataServices.locations.deleteById(id)
     }
+    async saveLocation(location: Location): Promise<Location> {
+        return await this.dataServices.locations.saveEntity(location)
+    }
 }
