@@ -1,66 +1,66 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument, Schema as MongooseSchema } from "mongoose";
-import { User, Session } from "./index";
-import { Collections } from "./enums";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose'
+import { HydratedDocument, Schema as MongooseSchema } from 'mongoose'
+import { User, Session } from './index'
+import { Collections } from './enums'
 
-export type LocationDocument = HydratedDocument<Location>;
+export type LocationDocument = HydratedDocument<Location>
 
 @Schema({})
 export class Location {
-    _id?: string;
+    _id?: string
 
     @Prop()
-    locationName?: string;
+    locationName?: string
 
     @Prop({ required: true })
-    locationCode: number;
+    locationCode: number
 
     @Prop({ required: true })
-    latitude: number;
+    latitude: number
 
     @Prop({ required: true })
-    longitude: number;
+    longitude: number
 
     @Prop({ required: true })
-    address: string;
+    address: string
 
     @Prop({ required: true })
-    city: string;
+    city: string
 
     @Prop({ required: true })
-    state: string;
+    state: string
 
     @Prop({ required: true, default: false })
-    occupied: boolean;
+    occupied: boolean
 
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: Collections.USER })
-    user?: User;
+    user?: User
 
     @Prop({ type: MongooseSchema.Types.ObjectId, ref: Collections.USER })
-    userOpenIntent?: User;
+    userOpenIntent?: User
 
     @Prop()
-    startTime?: number;
+    startTime?: number
 
     @Prop()
-    startDate?: Date;
+    startDate?: Date
 
     @Prop({
         type: [{ type: MongooseSchema.Types.ObjectId, ref: Collections.USER }],
     })
-    sessions?: Session[];
+    sessions?: Session[]
 
     @Prop({ required: true, default: 0 })
-    totalUses: number;
+    totalUses: number
 
     @Prop()
-    temperature?: number;
+    temperature?: number
 
     @Prop()
-    soundLevel?: number;
+    soundLevel?: number
 
     @Prop()
-    qrCodeBase64?: string;
+    qrCodeImageUrl?: string
 }
 
-export const LocationSchema = SchemaFactory.createForClass(Location);
+export const LocationSchema = SchemaFactory.createForClass(Location)

@@ -31,5 +31,5 @@ export class UpdateLocationParams {
     totalUses?: number
     temperature?: number
     soundLevel?: number
-    qrCodeBase64?: string
+    qrCodeImageUrl?: string
 }

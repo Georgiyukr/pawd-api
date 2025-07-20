@@ -3,6 +3,7 @@ import { DataServicesModule } from 'src/data/data-services.module'
 import { UtilsModule } from 'src/utils/utils.module'
 import { LocationsService } from './locations.service'
 import { LocationsController } from './locations.controller'
+import { GcpStorageModule } from '../../gcp/storage/storage.module'
 import { CommonProvidersModule } from '../../common/providers/providers.modules'
 import { RepositoriesModule } from '../../data/repositories/repositories.module'
 
@@ -12,6 +13,7 @@ import { RepositoriesModule } from '../../data/repositories/repositories.module'
         DataServicesModule,
         CommonProvidersModule,
         RepositoriesModule,
+        GcpStorageModule,
     ],
     exports: [LocationsService],
     providers: [LocationsService],
