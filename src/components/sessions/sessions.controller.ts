@@ -8,6 +8,8 @@ import {
 } from '@nestjs/common'
 import { SessionsService } from './sessions.service'
 import { StartSessionDTO } from './dtos/inputs/startSession.dto'
+import { LocationOutputDTO } from '../locations/dtos/outputs'
+import { StopSessionDTO } from './dtos/inputs/stopSession.dto'
 
 @Controller('sessions')
 export class SessionsController {
@@ -17,7 +19,7 @@ export class SessionsController {
     async startSession(
         @Param('locationId') locationId: string,
         @Body(new ValidationPipe()) startSessionDto: StartSessionDTO
-    ) {
+    ): Promise<LocationOutputDTO> {
         return await this.sessionsService.startSession(
             locationId,
             startSessionDto
@@ -26,9 +28,9 @@ export class SessionsController {
     @Post('/deactivate/:locationId')
     async stopSession(
         @Param('locationId') locationId: string,
-        @Body(new ValidationPipe()) stopSessionDto: any
+        @Body(new ValidationPipe()) stopSessionDto: StopSessionDTO
     ) {
-        return this.sessionsService.stopSession()
+        return this.sessionsService.stopSession(locationId, stopSessionDto)
     }
 
     @Post('/images')

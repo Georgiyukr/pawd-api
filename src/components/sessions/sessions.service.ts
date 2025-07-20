@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { StartSession } from './types'
+import { StopSession, StartSession } from './types'
 import { Location, User } from '../../common/entities'
 import { LocationsService } from '../locations/locations.service'
 import { UsersService } from '../users/users.service'
@@ -29,8 +29,15 @@ export class SessionsService {
         return location
     }
 
-    async stopSession() {
-        // Logic to stop a session
+    async stopSession(locationId: string, data: StopSession) {
+        const location: Location =
+            await this.locationService.getLocationById(locationId)
+        const user: User = await this.userService.getUserById(data.userId)
+        const totalTimeInUse = Calculators.calculateTotalTime(
+            location.startTime,
+            stopTime
+        )
+        const totalPrice = Calculators.calculateTotalPrice(totalTimeInUse)
         return { message: 'Session stopped' }
     }
 
