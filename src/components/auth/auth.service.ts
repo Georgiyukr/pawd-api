@@ -135,7 +135,6 @@ export class AuthService {
 
             const refreshTokenHash: string =
                 await this.hashService.makeHash(refreshToken)
-            console.log('Generated tokens for user', refreshTokenHash)
             return { accessToken, refreshTokenHash }
         } catch (error) {
             throw new Error(error.message)
