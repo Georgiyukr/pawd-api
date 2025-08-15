@@ -11,37 +11,37 @@ export class BaseMongoRepository<T> implements BaseMongoRepositoryInterface<T> {
         this.entity = entity
     }
 
+    buildQuery(
+        query: Mongoose.Query<any, any>,
+        options?: BaseMongoQueryOptions
+    ) {
+        if (options?.where) query = query.where(options.where)
+        if (options?.populate) query = query.populate(options.populate)
+        if (options?.select) query = query.select(options.select)
+        if (options?.sort) query = query.sort(options.sort)
+        console.log(query)
+        return query
+    }
+
     async getAll(options?: BaseMongoQueryOptions): Promise<T[]> {
-        const doc = options
-            ? await this.entity
-                  .find()
-                  .where(options.where)
-                  .populate(options.populate)
-                  .select(options.select)
-                  .sort(options.sort)
-            : await this.entity.find()
-        return doc
+        let query = this.entity.find()
+        query = this.buildQuery(query, options)
+        return (await query) as T[]
     }
 
     async get(filter: any, options?: BaseMongoQueryOptions): Promise<T> {
-        const doc: Document = options
-            ? ((await this.entity
-                  .findOne(filter)
-                  .populate(options.populate)
-                  .select(options.select)) as Document)
-            : ((await this.entity.findOne(filter)) as Document)
+        let query = this.entity.findOne(filter)
+        query = this.buildQuery(query, options)
+        const doc: Document = (await query) as Document
         if (!doc) return null
         return doc as T
     }
 
     async getById(id: string, options?: BaseMongoQueryOptions): Promise<T> {
         const _id = new Mongoose.Types.ObjectId(id)
-        const doc: Document = options
-            ? ((await this.entity
-                  .findById(_id)
-                  .populate(options.populate)
-                  .select(options.select)) as Document)
-            : ((await this.entity.findById(id)) as Document)
+        let query = this.entity.findById(_id)
+        query = this.buildQuery(query, options)
+        const doc: Document = (await query) as Document
         if (!doc) return null
         return doc as T
     }
