@@ -1,4 +1,4 @@
-import { PaymentMethod } from '../../../utils/payments-client/types'
+import { PaymentMethod } from '../../../common/services/payments-client/types'
 
 export class PublicKeyOutputDTO {
     publicKey: string

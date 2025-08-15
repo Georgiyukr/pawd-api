@@ -14,7 +14,7 @@ export class UsersRepository {
         return await this.dataServices.users.update(filter, update)
     }
 
-    async updateUserById(id, update): Promise<User> {
+    async updateUserById(id, update: Partial<User>): Promise<User> {
         return await this.dataServices.users.updateById(id, update)
     }
 

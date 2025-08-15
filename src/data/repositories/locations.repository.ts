@@ -22,7 +22,7 @@ export class LocationsRepository {
         return await this.dataServices.locations.create(location)
     }
 
-    async updateLocationById(id, update): Promise<Location> {
+    async updateLocationById(id, update: Partial<Location>): Promise<Location> {
         return await this.dataServices.locations.updateById(id, update)
     }
 

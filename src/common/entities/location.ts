@@ -10,11 +10,11 @@ export class Location {
     city: string
     state: string
     occupied: boolean
-    user?: User
-    userOpenIntent?: User
+    user?: string | User
+    userOpenIntent?: string | User
     startTime?: number
     startDate?: Date
-    sessions?: Session[]
+    sessions?: string[] | Session[]
     totalUses: number
     temperature?: number
     soundLevel?: number

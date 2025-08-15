@@ -26,7 +26,7 @@ import {
     ValidationPipe,
 } from '@nestjs/common'
 import { PaymentsService } from './payments.service'
-import { Config } from '../../utils/config'
+import { Config } from '../../common/providers/config.service'
 import { UserIdInputDTO } from '../../common/dtos/input'
 import {
     ChangeDefaultPaymentMethod,

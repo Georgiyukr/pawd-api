@@ -1,23 +1,24 @@
-import { Module } from "@nestjs/common";
+import { Module } from '@nestjs/common'
 import {
     JwtService as NestJwtService,
     JwtModule as NestJwtModule,
-} from "@nestjs/jwt";
-import { AuthController } from "./auth.controller";
-import { AuthService } from "./auth.service";
-import { UsersModule } from "../users/users.module";
-import { Config } from "../../utils/config";
-import { UtilsModule } from "../../utils/utils.module";
-import { JwtService } from "./jwt.service";
+} from '@nestjs/jwt'
+import { AuthController } from './auth.controller'
+import { AuthService } from './auth.service'
+import { UsersModule } from '../users/users.module'
+import { Config } from '../../common/providers/config.service'
+import { JwtService } from './jwt.service'
 import {
     JWT_ACCCESS_TOKEN_SERVICE,
     JWT_REFRESH_TOKEN_SERVICE,
-} from "./constants";
+} from './constants'
+import { CommonProvidersModule } from '../../common/providers/providers.modules'
+import { EmailModule } from '../../common/services/email/email.module'
 
 @Module({
     imports: [
         NestJwtModule.registerAsync({
-            imports: [UtilsModule],
+            imports: [CommonProvidersModule],
             inject: [Config],
             useFactory: (config: Config) => ({
                 privateKey: config.accessTokenPrivateKey,
@@ -46,7 +47,7 @@ export class AccessTokenModule {}
 @Module({
     imports: [
         NestJwtModule.registerAsync({
-            imports: [UtilsModule],
+            imports: [CommonProvidersModule],
             inject: [Config],
             useFactory: (config: Config) => ({
                 privateKey: config.refreshTokenPrivateKey,
@@ -73,15 +74,15 @@ export class AccessTokenModule {}
 export class RefreshTokenModule {}
 
 @Module({
-    imports: [UsersModule, UtilsModule, AccessTokenModule, RefreshTokenModule],
-    exports: [AuthService],
-    providers: [
-        AuthService,
-        UtilsModule,
-        JwtService,
+    imports: [
+        UsersModule,
+        EmailModule,
         AccessTokenModule,
         RefreshTokenModule,
+        CommonProvidersModule,
     ],
+    exports: [AuthService],
+    providers: [AuthService, JwtService, AccessTokenModule, RefreshTokenModule],
     controllers: [AuthController],
 })
 export class AuthModule {}

@@ -14,10 +14,10 @@ import {
     PasswordResetToken,
     RegisteredUser,
 } from './types'
-import { HashService } from '../../utils/hash.service'
+import { HashService } from '../../common/providers/hash.service'
 import { JwtService } from './jwt.service'
-import { EmailService } from '../../utils/email/email.service'
 import { ErrorMessages } from '../../common/constants'
+import { EmailService } from '../../common/services/email/email.service'
 
 interface Tokens {
     accessToken: string
@@ -123,17 +123,22 @@ export class AuthService {
     }
 
     async generateAccessAndRefreshTokens(user: User): Promise<Tokens> {
-        const accessTokenPayload: AccessTokenPayload =
-            this.jwtService.formatAccessTokenPayload(user.id)
-        const refreshTokenPayload = this.jwtService.formatRefreshTokenPayload()
-        const accessToken: string =
-            await this.jwtService.generateAccessToken(accessTokenPayload)
-        const refreshToken: string =
-            await this.jwtService.generateRefreshToken(refreshTokenPayload)
+        try {
+            const accessTokenPayload: AccessTokenPayload =
+                this.jwtService.formatAccessTokenPayload(user.id)
+            const refreshTokenPayload =
+                this.jwtService.formatRefreshTokenPayload()
+            const accessToken: string =
+                await this.jwtService.generateAccessToken(accessTokenPayload)
+            const refreshToken: string =
+                await this.jwtService.generateRefreshToken(refreshTokenPayload)
 
-        const refreshTokenHash: string =
-            await this.hashService.makeHash(refreshToken)
-        return { accessToken, refreshTokenHash }
+            const refreshTokenHash: string =
+                await this.hashService.makeHash(refreshToken)
+            return { accessToken, refreshTokenHash }
+        } catch (error) {
+            throw new Error(error.message)
+        }
     }
 
     async forgotUsername(email: Lowercase<string>): Promise<Message> {

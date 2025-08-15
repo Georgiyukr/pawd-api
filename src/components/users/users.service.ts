@@ -7,9 +7,9 @@ import {
 import { CreateUser, NewUser } from '../../common/types'
 import { User, UserBuilder } from '../../common/entities'
 import { UsersRepository } from '../../data/repositories/users.repository'
-import { HashService } from '../../utils/hash.service'
+import { HashService } from '../../common/providers/hash.service'
 import { PaymentsService } from '../payments/payments.service'
-import { PaymentCustomer } from '../../utils/payments-client/types'
+import { PaymentCustomer } from '../../common/services/payments-client/types'
 
 @Injectable()
 export class UsersService {
@@ -52,15 +52,27 @@ export class UsersService {
     }
 
     async getUserById(id: string, options = undefined): Promise<User> {
-        return await this.usersRepository.getUserById(id, options)
+        const user = await this.usersRepository.getUserById(id, options)
+        if (!user) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND)
+        }
+        return user
     }
 
     async updateUser(filter, data): Promise<User> {
-        return await this.usersRepository.updateUser(filter, data)
+        const user = await this.usersRepository.updateUser(filter, data)
+        if (!user) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND)
+        }
+        return user
     }
 
     async updateUserById(id: string, data): Promise<User> {
-        return await this.usersRepository.updateUserById(id, data)
+        const user = await this.usersRepository.updateUserById(id, data)
+        if (!user) {
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND)
+        }
+        return user
     }
 
     buildNewUser(user: NewUser): User {

@@ -6,9 +6,9 @@ import * as QRcode from 'qrcode'
 import { ErrorMessages, Constants } from '../../common/constants'
 import { Message } from '../../common/types'
 import { FilesystemService } from '../../common/providers/filesystem.service'
-import { EncryptionService } from '../../utils/encryption.service'
-import { GcpStorageService } from '../../gcp/storage/storage.service'
-import { Config } from '../../utils/config'
+import { Config } from '../../common/providers/config.service'
+import { EncryptionService } from '../../common/providers/encryption.service'
+import { GcpStorageService } from '../../common/services/gcp/storage/storage.service'
 
 @Injectable()
 export class LocationsService {

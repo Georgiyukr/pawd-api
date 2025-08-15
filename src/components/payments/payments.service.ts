@@ -20,7 +20,6 @@ import { CreatePaymentMethod, DeletePaymentMethod } from './types'
 import { UsersRepository } from '../../data/repositories/users.repository'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { User } from '../../common/entities'
-import { PaymentsClientService } from '../../utils/payments-client/payments.client.service'
 import {
     CreatePaymentCustomer,
     PaymentCustomer,
@@ -29,7 +28,8 @@ import {
     PaymentMethodsList,
     PaymentMethodUpdateParams,
     SetupIntent,
-} from '../../utils/payments-client/types'
+} from '../../common/services/payments-client/types'
+import { PaymentsClientService } from '../../common/services/payments-client/payments.client.service'
 
 @Injectable()
 export class PaymentsService {
