@@ -1,4 +1,10 @@
-import { IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator'
+import {
+    IsDate,
+    IsDateString,
+    IsNotEmpty,
+    IsNumber,
+    IsString,
+} from 'class-validator'
 
 export class StopSessionDTO {
     @IsNotEmpty()
@@ -6,10 +12,10 @@ export class StopSessionDTO {
     userId: string
 
     @IsNotEmpty()
-    @IsDate()
-    startDate: Date
+    @IsDateString()
+    stopDate: Date
 
     @IsNotEmpty()
     @IsNumber()
-    startTime: number
+    stopTime: number
 }

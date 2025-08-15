@@ -1,12 +1,7 @@
-import { Document, FilterQuery, Model } from 'mongoose'
+import { Document, Model } from 'mongoose'
 import * as Mongoose from 'mongoose'
 import { BaseRepositoryInterface } from '../base.interface.repository'
 import { BaseMongoQueryOptions, DeleteResult } from './types'
-import {
-    formatSingleResponse,
-    formatSingleResponseWithNoPassword,
-    formatArrayResponse,
-} from './formatters'
 
 interface BaseMongoRepositoryInterface<T> extends BaseRepositoryInterface<T> {}
 
@@ -20,10 +15,12 @@ export class BaseMongoRepository<T> implements BaseMongoRepositoryInterface<T> {
         const doc = options
             ? await this.entity
                   .find()
+                  .where(options.where)
                   .populate(options.populate)
                   .select(options.select)
+                  .sort(options.sort)
             : await this.entity.find()
-        return formatArrayResponse(doc)
+        return doc
     }
 
     async get(filter: any, options?: BaseMongoQueryOptions): Promise<T> {
@@ -34,7 +31,7 @@ export class BaseMongoRepository<T> implements BaseMongoRepositoryInterface<T> {
                   .select(options.select)) as Document)
             : ((await this.entity.findOne(filter)) as Document)
         if (!doc) return null
-        return formatSingleResponse(doc)
+        return doc as T
     }
 
     async getById(id: string, options?: BaseMongoQueryOptions): Promise<T> {
@@ -46,13 +43,13 @@ export class BaseMongoRepository<T> implements BaseMongoRepositoryInterface<T> {
                   .select(options.select)) as Document)
             : ((await this.entity.findById(id)) as Document)
         if (!doc) return null
-        return formatSingleResponse(doc)
+        return doc as T
     }
 
     async create(data: T): Promise<T> {
         const model = new this.entity(data)
         const doc: Document = await model.save(data)
-        return formatSingleResponseWithNoPassword(doc)
+        return doc as T
     }
 
     async update(
@@ -64,7 +61,7 @@ export class BaseMongoRepository<T> implements BaseMongoRepositoryInterface<T> {
             update,
             { new: true }
         )
-        return formatSingleResponseWithNoPassword(doc)
+        return doc as T
     }
 
     async updateById(id: string, update: T): Promise<T> {
@@ -74,7 +71,7 @@ export class BaseMongoRepository<T> implements BaseMongoRepositoryInterface<T> {
             update,
             { new: true }
         )
-        return formatSingleResponseWithNoPassword(doc)
+        return doc as T
     }
 
     async delete(data: T): Promise<DeleteResult> {
@@ -84,10 +81,5 @@ export class BaseMongoRepository<T> implements BaseMongoRepositoryInterface<T> {
     async deleteById(id: string, options: Mongoose.QueryOptions): Promise<T> {
         const _id = new Mongoose.Types.ObjectId(id)
         return await this.entity.findByIdAndRemove(_id, options)
-    }
-
-    async saveEntity(entity: T & Document): Promise<T> {
-        const savedEntity = await entity.save()
-        return formatSingleResponseWithNoPassword(savedEntity)
     }
 }

@@ -9,8 +9,7 @@ export abstract class BaseRepository<T> implements BaseRepositoryInterface<T> {
         filter: Record<string, T>,
         update: Record<string, T>
     ): Promise<T>
-    abstract updateById(id: string, update: T): Promise<T>
+    abstract updateById(id: string, update: Partial<T>): Promise<T>
     abstract delete(data: T): Promise<T | null | unknown>
     abstract deleteById(id: string, ...rest): Promise<T | null | unknown>
-    abstract saveEntity(entity: T): Promise<T>
 }

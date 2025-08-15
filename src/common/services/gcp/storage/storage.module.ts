@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common'
 import { Storage } from '@google-cloud/storage'
-import { Config } from '../../utils/config'
-import { UtilsModule } from 'src/utils/utils.module'
+import { Config } from '../../../providers/config.service'
 import { GcpStorageService } from './storage.service'
+import { CommonProvidersModule } from 'src/common/providers/providers.modules'
 
 @Module({
-    imports: [UtilsModule],
+    imports: [CommonProvidersModule],
     providers: [
         {
             inject: [Config],

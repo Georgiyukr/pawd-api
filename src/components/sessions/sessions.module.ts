@@ -5,6 +5,8 @@ import { LocationsModule } from '../locations/locations.module'
 import { UsersModule } from '../users/users.module'
 import { RepositoriesModule } from '../../data/repositories/repositories.module'
 import { DataServicesModule } from '../../data/data-services.module'
+import { CommonProvidersModule } from '../../common/providers/providers.modules'
+import { GcpStorageModule } from 'src/common/services/gcp/storage/storage.module'
 
 @Module({
     imports: [
@@ -12,6 +14,8 @@ import { DataServicesModule } from '../../data/data-services.module'
         UsersModule,
         RepositoriesModule,
         DataServicesModule,
+        CommonProvidersModule,
+        GcpStorageModule,
     ],
     exports: [SessionsService],
     providers: [SessionsService],

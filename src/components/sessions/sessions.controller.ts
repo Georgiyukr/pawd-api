@@ -1,15 +1,20 @@
-import {
-    Body,
-    Controller,
-    Injectable,
-    Param,
-    Post,
-    ValidationPipe,
-} from '@nestjs/common'
+import { Body, Controller, Param, Post, ValidationPipe } from '@nestjs/common'
 import { SessionsService } from './sessions.service'
-import { StartSessionDTO } from './dtos/inputs/startSession.dto'
+
 import { LocationOutputDTO } from '../locations/dtos/outputs'
-import { StopSessionDTO } from './dtos/inputs/stopSession.dto'
+
+import { UserIdInputDTO } from '../../common/dtos/input'
+import {
+    StartSessionDTO,
+    AddImageDTO,
+    StopSessionDTO,
+    SubmitFeedbackDTO,
+} from './dtos/inputs'
+import {
+    FeedbackOutputDTO,
+    SessionOutputDTO,
+    StopSessionOutputDTO,
+} from './dtos/outputs'
 
 @Controller('sessions')
 export class SessionsController {
@@ -18,35 +23,40 @@ export class SessionsController {
     @Post('/activate/:locationId')
     async startSession(
         @Param('locationId') locationId: string,
-        @Body(new ValidationPipe()) startSessionDto: StartSessionDTO
+        @Body(new ValidationPipe()) data: StartSessionDTO
     ): Promise<LocationOutputDTO> {
-        return await this.sessionsService.startSession(
-            locationId,
-            startSessionDto
-        )
+        return await this.sessionsService.startSession(locationId, data)
     }
     @Post('/deactivate/:locationId')
     async stopSession(
         @Param('locationId') locationId: string,
-        @Body(new ValidationPipe()) stopSessionDto: StopSessionDTO
-    ) {
-        return this.sessionsService.stopSession(locationId, stopSessionDto)
+        @Body(new ValidationPipe()) data: StopSessionDTO
+    ): Promise<StopSessionOutputDTO> {
+        return this.sessionsService.stopSession(locationId, data)
     }
 
     @Post('/images')
     async addPawdImageToSession(
-        @Body(new ValidationPipe()) addPawdImageDto: any
-    ) {
-        return this.sessionsService.addPawdImageToSession()
+        @Body(new ValidationPipe()) data: AddImageDTO
+    ): Promise<SessionOutputDTO> {
+        return this.sessionsService.addPawdImageToSession(data)
     }
 
     @Post('/feedback')
-    async submitFeedback(@Body(new ValidationPipe()) submitFeedbackDto: any) {
-        return this.sessionsService.submitFeedback()
+    async submitFeedback(
+        @Body(new ValidationPipe()) data: SubmitFeedbackDTO
+    ): Promise<FeedbackOutputDTO> {
+        const { sessionId, ...feedbackData } = data
+        return await this.sessionsService.submitFeedback(
+            sessionId,
+            feedbackData
+        )
     }
 
-    @Post('/history')
-    async getSessionsHistory() {
-        return this.sessionsService.getSessionsHistory()
+    @Post('/users/history')
+    async getUserSessionsHistory(
+        @Body(new ValidationPipe()) data: UserIdInputDTO
+    ): Promise<SessionOutputDTO[]> {
+        return await this.sessionsService.getUserSessionsHistory(data.userId)
     }
 }

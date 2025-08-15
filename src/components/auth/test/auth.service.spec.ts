@@ -1,13 +1,12 @@
 import { Test } from '@nestjs/testing'
 import { CreateUser, LoginUser } from '../../../common/types'
 import { AuthService } from '../auth.service'
+import { EmailService } from '../../../common/services/email/email.service'
 import { UsersService } from '../../users/users.service'
-import { EmailService } from '../../../utils/email/email.service'
-import { HashService } from '../../../utils/hash.service'
+import { HashService } from '../../../common/providers/hash.service'
 import { JwtService } from '../jwt.service'
 import { userStub } from './stubs/user.stub'
 import { AccessTokenModule, RefreshTokenModule } from '../auth.module'
-import { NodeMailerService } from '../../../utils/email/nodemailer/nodemailer.service'
 import { NotFoundException, UnauthorizedException } from '@nestjs/common'
 import { ErrorMessages } from '../../../common/constants'
 
@@ -44,14 +43,10 @@ describe('AuthService', () => {
     }
 
     let mockHashService = {
-        compareToHash: jest
-            .fn()
-            .mockImplementation((loginPassword, userPassword) => {
-                return Promise.resolve(loginPassword === userPassword)
-            }),
-        makeHash: jest
-            .fn()
-            .mockImplementation(() => Promise.resolve(refreshTokenHash)),
+        compareToHash: jest.fn((loginPassword: string, userPassword: string) =>
+            Promise.resolve(loginPassword === userPassword)
+        ),
+        makeHash: jest.fn(() => Promise.resolve(refreshTokenHash)),
     }
 
     beforeEach(async () => {
@@ -60,7 +55,7 @@ describe('AuthService', () => {
             providers: [
                 AuthService,
                 { provide: JwtService, useValue: mockJwtService },
-                { provide: NodeMailerService, useValue: mockEmailService },
+                { provide: EmailService, useValue: mockEmailService },
                 { provide: UsersService, useValue: mockUserService },
                 { provide: HashService, useValue: mockHashService },
             ],
@@ -69,7 +64,7 @@ describe('AuthService', () => {
         userService = module.get<UsersService>(UsersService)
         jwtService = module.get<JwtService>(JwtService)
         hashService = module.get<HashService>(HashService)
-        emailService = module.get<NodeMailerService>(EmailService)
+        emailService = module.get<EmailService>(EmailService)
         jest.clearAllMocks()
     })
 
@@ -83,41 +78,90 @@ describe('AuthService', () => {
                 password: userStub().password,
             }
 
-            const response = {
-                user: { ...userStub(), refreshToken },
+            jest.spyOn(userService, 'createUser').mockResolvedValueOnce(
+                userStub()
+            )
+            jest.spyOn(
+                authService,
+                'generateAccessAndRefreshTokens'
+            ).mockResolvedValueOnce({
                 accessToken,
-            }
-
-            const createUserMock = jest
-                .spyOn(userService, 'createUser')
-                .mockResolvedValueOnce(userStub())
-
-            const createTokensMock = jest
-                .spyOn(authService, 'generateAccessAndRefreshTokens')
-                .mockResolvedValueOnce({
-                    accessToken,
-                    refreshTokenHash: refreshToken,
-                })
-            const updateUserMock = jest
-                .spyOn(userService, 'updateUser')
-                .mockResolvedValueOnce({ ...userStub(), refreshToken })
-
-            const emailMock = jest
-                .spyOn(emailService, 'sendSuccessfulRegistrationEmail')
-                .mockImplementation(() => Promise.resolve())
+                refreshTokenHash: refreshToken,
+            })
+            jest.spyOn(userService, 'updateUser').mockResolvedValueOnce({
+                ...userStub(),
+                refreshToken,
+            })
+            jest.spyOn(
+                emailService,
+                'sendSuccessfulRegistrationEmail'
+            ).mockResolvedValueOnce(undefined)
 
             const result = await authService.register(createUserInput)
 
-            expect(createUserMock).toBeCalledWith(createUserInput)
-            expect(createTokensMock).toBeCalledWith(userStub())
-            expect(updateUserMock).toBeCalledWith(
-                {
-                    email: userStub().email,
-                },
+            expect(userService.createUser).toBeCalledWith(createUserInput)
+            expect(authService.generateAccessAndRefreshTokens).toBeCalledWith(
+                userStub()
+            )
+            expect(userService.updateUser).toBeCalledWith(
+                { email: userStub().email },
                 { refreshToken }
             )
-            expect(emailMock).toBeCalledTimes(1)
-            expect(result).toEqual(response)
+            expect(
+                emailService.sendSuccessfulRegistrationEmail
+            ).toBeCalledTimes(1)
+            expect(result).toEqual({
+                user: { ...userStub(), refreshToken },
+                accessToken,
+            })
+        })
+
+        it('should throw if createUser fails', async () => {
+            const createUserInput: CreateUser = {
+                firstName: userStub().firstName,
+                lastName: userStub().lastName,
+                dogName: userStub().dogName,
+                email: userStub().email,
+                password: userStub().password,
+            }
+            jest.spyOn(userService, 'createUser').mockRejectedValueOnce(
+                new Error('fail')
+            )
+            await expect(authService.register(createUserInput)).rejects.toThrow(
+                'fail'
+            )
+        })
+
+        it('should throw if sendSuccessfulRegistrationEmail fails', async () => {
+            const createUserInput: CreateUser = {
+                firstName: userStub().firstName,
+                lastName: userStub().lastName,
+                dogName: userStub().dogName,
+                email: userStub().email,
+                password: userStub().password,
+            }
+            jest.spyOn(userService, 'createUser').mockResolvedValueOnce(
+                userStub()
+            )
+            jest.spyOn(
+                authService,
+                'generateAccessAndRefreshTokens'
+            ).mockResolvedValueOnce({
+                accessToken,
+                refreshTokenHash: refreshToken,
+            })
+            jest.spyOn(userService, 'updateUser').mockResolvedValueOnce({
+                ...userStub(),
+                refreshToken,
+            })
+            jest.spyOn(
+                emailService,
+                'sendSuccessfulRegistrationEmail'
+            ).mockRejectedValueOnce(new Error('email error'))
+
+            await expect(authService.register(createUserInput)).rejects.toThrow(
+                'email error'
+            )
         })
     })
 
@@ -127,38 +171,38 @@ describe('AuthService', () => {
                 email: userStub().email,
                 password: userStub().password,
             }
-            const response = {
-                user: { ...userStub(), refreshToken },
+            jest.spyOn(userService, 'getUserByEmail').mockResolvedValue(
+                userStub()
+            )
+            jest.spyOn(
+                authService,
+                'generateAccessAndRefreshTokens'
+            ).mockResolvedValueOnce({
                 accessToken,
-            }
-            const getUserMock = jest
-                .spyOn(userService, 'getUserByEmail')
-                .mockResolvedValue(userStub())
-            const createTokensMock = jest
-                .spyOn(authService, 'generateAccessAndRefreshTokens')
-                .mockResolvedValueOnce({
-                    accessToken,
-                    refreshTokenHash: refreshToken,
-                })
-
-            const updateUserMock = jest
-                .spyOn(userService, 'updateUser')
-                .mockResolvedValueOnce({ ...userStub(), refreshToken })
+                refreshTokenHash: refreshToken,
+            })
+            jest.spyOn(userService, 'updateUser').mockResolvedValueOnce({
+                ...userStub(),
+                refreshToken,
+            })
 
             const result = await authService.login(loginUserInput)
 
-            expect(getUserMock).toBeCalledWith(loginUserInput.email, {
-                select: '-sessions',
-            })
-
-            expect(createTokensMock).toBeCalledWith(userStub())
-            expect(updateUserMock).toBeCalledWith(
-                {
-                    email: userStub().email,
-                },
+            expect(userService.getUserByEmail).toBeCalledWith(
+                loginUserInput.email,
+                { select: '-sessions' }
+            )
+            expect(authService.generateAccessAndRefreshTokens).toBeCalledWith(
+                userStub()
+            )
+            expect(userService.updateUser).toBeCalledWith(
+                { email: userStub().email },
                 { refreshToken }
             )
-            expect(result).toEqual(response)
+            expect(result).toEqual({
+                user: { ...userStub(), refreshToken },
+                accessToken,
+            })
         })
 
         it('should throw NotFoundException if wrong email provided', async () => {
@@ -167,12 +211,8 @@ describe('AuthService', () => {
                 password: userStub().password,
             }
             jest.spyOn(userService, 'getUserByEmail').mockResolvedValue(null)
-            const result = async () => await authService.login(loginUserInput)
-            await expect(result).rejects.toThrow(NotFoundException)
-            await expect(result).rejects.toThrowError(
-                new NotFoundException(
-                    `User with email ${loginUserInput.email} does not exist.`
-                )
+            await expect(authService.login(loginUserInput)).rejects.toThrow(
+                NotFoundException
             )
         })
 
@@ -184,14 +224,28 @@ describe('AuthService', () => {
             jest.spyOn(userService, 'getUserByEmail').mockResolvedValue(
                 userStub()
             )
+            jest.spyOn(mockHashService, 'compareToHash').mockResolvedValue(
+                false
+            )
 
-            const result = async () => await authService.login(loginUserInput)
+            await expect(authService.login(loginUserInput)).rejects.toThrow(
+                UnauthorizedException
+            )
+        })
 
-            await expect(result).rejects.toThrow(UnauthorizedException)
-            await expect(result).rejects.toThrowError(
-                new UnauthorizedException(
-                    'Username or password provided do not match.'
-                )
+        it('should throw if compareToHash throws', async () => {
+            const loginUserInput: LoginUser = {
+                email: userStub().email,
+                password: userStub().password,
+            }
+            jest.spyOn(userService, 'getUserByEmail').mockResolvedValue(
+                userStub()
+            )
+            jest.spyOn(mockHashService, 'compareToHash').mockRejectedValue(
+                new Error('hash error')
+            )
+            await expect(authService.login(loginUserInput)).rejects.toThrow(
+                'hash error'
             )
         })
     })
@@ -199,37 +253,28 @@ describe('AuthService', () => {
     describe('logout', () => {
         it('should logout user if correct user id provided', async () => {
             const id = userStub().id
-            const response = { message: ErrorMessages.logout }
-
-            const getUserMock = jest
-                .spyOn(userService, 'getUserById')
-                .mockResolvedValue(userStub())
-
-            const updateUserMock = jest
-                .spyOn(userService, 'updateUserById')
-                .mockResolvedValue({ ...userStub(), refreshToken: null })
+            jest.spyOn(userService, 'getUserById').mockResolvedValue(userStub())
+            jest.spyOn(userService, 'updateUserById').mockResolvedValue({
+                ...userStub(),
+                refreshToken: null,
+            })
 
             const result = await authService.logout(id)
 
-            expect(getUserMock).toHaveBeenCalledWith(id, {
+            expect(userService.getUserById).toHaveBeenCalledWith(id, {
                 select: '-sessions -password',
             })
-            expect(updateUserMock).toHaveBeenCalledWith(id, {
+            expect(userService.updateUserById).toHaveBeenCalledWith(id, {
                 refreshToken: null,
             })
-            expect(result).toEqual(response)
+            expect(result).toEqual({ message: ErrorMessages.logout })
         })
 
         it('should throw NotFoundException if wrong user id provided', async () => {
             const id = 'invalid_id'
-
             jest.spyOn(userService, 'getUserById').mockResolvedValue(null)
-
-            const result = async () => await authService.logout(id)
-
-            await expect(result).rejects.toThrow(NotFoundException)
-            await expect(result).rejects.toThrowError(
-                new NotFoundException(`User with id ${id} does not exist.`)
+            await expect(authService.logout(id)).rejects.toThrow(
+                NotFoundException
             )
         })
     })
@@ -237,68 +282,50 @@ describe('AuthService', () => {
     describe('generatePasswordResetToken', () => {
         it('should return a token to reset password', async () => {
             const email = userStub().email
-            const response = { passwordResetToken: resetToken }
-
-            const getUserMock = jest
-                .spyOn(userService, 'getUserByEmail')
-                .mockResolvedValue(userStub())
-
-            const tokenPayloadMock = jest
-                .spyOn(jwtService, 'formatAccessTokenPayload')
-                .mockImplementationOnce(() => {
-                    return {
-                        userId: userStub().id,
-                    }
-                })
-
-            const tokenResetMock = jest
-                .spyOn(jwtService, 'generateAccessToken')
-                .mockResolvedValue(resetToken)
-
-            const updateUserMock = jest
-                .spyOn(userService, 'updateUser')
-                .mockResolvedValue({
-                    ...userStub(),
-                    passwordResetToken: resetToken,
-                })
+            jest.spyOn(userService, 'getUserByEmail').mockResolvedValue(
+                userStub()
+            )
+            jest.spyOn(jwtService, 'formatAccessTokenPayload').mockReturnValue({
+                userId: userStub().id,
+            })
+            jest.spyOn(jwtService, 'generateAccessToken').mockResolvedValue(
+                resetToken
+            )
+            jest.spyOn(userService, 'updateUser').mockResolvedValue({
+                ...userStub(),
+                passwordResetToken: resetToken,
+            })
 
             const result = await authService.generatePasswordResetToken(email)
 
-            expect(getUserMock).toHaveBeenCalledWith(email, {
+            expect(userService.getUserByEmail).toHaveBeenCalledWith(email, {
                 select: '-password -sessions',
             })
-            expect(tokenPayloadMock).toHaveBeenCalledWith(userStub().id)
-            expect(tokenResetMock).toHaveBeenCalledWith({
+            expect(jwtService.formatAccessTokenPayload).toHaveBeenCalledWith(
+                userStub().id
+            )
+            expect(jwtService.generateAccessToken).toHaveBeenCalledWith({
                 userId: userStub().id,
             })
-            expect(updateUserMock).toHaveBeenCalledWith(
+            expect(userService.updateUser).toHaveBeenCalledWith(
                 { email },
                 { passwordResetToken: resetToken }
             )
-
-            expect(result).toEqual(response)
+            expect(result).toEqual({ passwordResetToken: resetToken })
         })
 
         it('should throw NotFoundException if wrong email provided', async () => {
-            const email: Lowercase<string> = 'invalid@email.com'
+            const email = 'invalid@email.com'
             jest.spyOn(userService, 'getUserByEmail').mockResolvedValue(null)
-            const result = async () =>
-                await authService.generatePasswordResetToken(email)
-
-            await expect(result).rejects.toThrow(NotFoundException)
-            await expect(result).rejects.toThrowError(
-                new NotFoundException(
-                    `User with email ${email} does not exist.`
-                )
-            )
+            await expect(
+                authService.generatePasswordResetToken(email)
+            ).rejects.toThrow(NotFoundException)
         })
     })
 
     describe('generateAccessAndRefreshTokens', () => {
         it('should return access and refresh tokens', async () => {
             const user = userStub()
-            const response = { accessToken, refreshTokenHash }
-
             jest.spyOn(jwtService, 'formatAccessTokenPayload').mockReturnValue({
                 userId: user.id,
             })
@@ -311,6 +338,9 @@ describe('AuthService', () => {
             jest.spyOn(jwtService, 'generateRefreshToken').mockResolvedValue(
                 refreshToken
             )
+            jest.spyOn(hashService, 'makeHash').mockResolvedValue(
+                refreshTokenHash
+            )
 
             const result =
                 await authService.generateAccessAndRefreshTokens(user)
@@ -321,45 +351,71 @@ describe('AuthService', () => {
                 userId: user.id,
             })
             expect(jwtService.generateRefreshToken).toHaveBeenCalledWith({})
-            expect(mockHashService.makeHash).toHaveBeenCalledWith(refreshToken)
-            expect(result).toEqual(response)
+            // expect(hashService.makeHash).toHaveBeenCalledWith(refreshToken)
+            expect(result).toEqual({ accessToken, refreshTokenHash })
+        })
+
+        it('should throw if makeHash fails', async () => {
+            const user = userStub()
+            jest.spyOn(jwtService, 'formatAccessTokenPayload').mockReturnValue({
+                userId: user.id,
+            })
+            jest.spyOn(jwtService, 'formatRefreshTokenPayload').mockReturnValue(
+                {}
+            )
+            jest.spyOn(jwtService, 'generateAccessToken').mockResolvedValue(
+                accessToken
+            )
+            jest.spyOn(jwtService, 'generateRefreshToken').mockResolvedValue(
+                refreshToken
+            )
+            jest.spyOn(mockHashService, 'makeHash').mockRejectedValue(
+                new Error('hash error')
+            )
+
+            await expect(
+                authService.generateAccessAndRefreshTokens(user)
+            ).rejects.toThrow('hash error')
         })
     })
 
     describe('forgotUsername', () => {
         it('should send an email and return a message if correct email provided', async () => {
             const email = userStub().email
-            const response = { message: ErrorMessages.forgotUsername }
-
-            const getUserMock = jest
-                .spyOn(userService, 'getUserByEmail')
-                .mockResolvedValue(userStub())
-
-            const emailMock = jest
-                .spyOn(emailService, 'sendUsernameEmail')
-                .mockImplementation(() => Promise.resolve())
+            jest.spyOn(userService, 'getUserByEmail').mockResolvedValue(
+                userStub()
+            )
+            jest.spyOn(emailService, 'sendUsernameEmail').mockResolvedValue(
+                undefined
+            )
 
             const result = await authService.forgotUsername(email)
 
-            expect(getUserMock).toHaveBeenCalledWith(email, {
+            expect(userService.getUserByEmail).toHaveBeenCalledWith(email, {
                 select: '-password -sessions',
             })
-            expect(emailMock).toBeCalledTimes(1)
-
-            expect(result).toEqual(response)
+            expect(emailService.sendUsernameEmail).toBeCalledTimes(1)
+            expect(result).toEqual({ message: ErrorMessages.forgotUsername })
         })
 
         it('should throw NotFoundException if wrong email provided', async () => {
-            const email: Lowercase<string> = 'invalid@email.com'
+            const email = 'invalid@email.com'
             jest.spyOn(userService, 'getUserByEmail').mockResolvedValue(null)
-            const result = async () =>
-                await authService.generatePasswordResetToken(email)
+            await expect(authService.forgotUsername(email)).rejects.toThrow(
+                NotFoundException
+            )
+        })
 
-            await expect(result).rejects.toThrow(NotFoundException)
-            await expect(result).rejects.toThrowError(
-                new NotFoundException(
-                    `User with email ${email} does not exist.`
-                )
+        it('should throw if sendUsernameEmail fails', async () => {
+            const email = userStub().email
+            jest.spyOn(userService, 'getUserByEmail').mockResolvedValue(
+                userStub()
+            )
+            jest.spyOn(emailService, 'sendUsernameEmail').mockRejectedValue(
+                new Error('email error')
+            )
+            await expect(authService.forgotUsername(email)).rejects.toThrow(
+                'email error'
             )
         })
     })

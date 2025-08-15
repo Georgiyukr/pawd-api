@@ -1,15 +1,13 @@
 import { Module } from '@nestjs/common'
 import { DataServicesModule } from 'src/data/data-services.module'
-import { UtilsModule } from 'src/utils/utils.module'
 import { LocationsService } from './locations.service'
 import { LocationsController } from './locations.controller'
-import { GcpStorageModule } from '../../gcp/storage/storage.module'
 import { CommonProvidersModule } from '../../common/providers/providers.modules'
 import { RepositoriesModule } from '../../data/repositories/repositories.module'
+import { GcpStorageModule } from '../../common/services/gcp/storage/storage.module'
 
 @Module({
     imports: [
-        UtilsModule,
         DataServicesModule,
         CommonProvidersModule,
         RepositoriesModule,

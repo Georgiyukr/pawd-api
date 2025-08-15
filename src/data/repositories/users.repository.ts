@@ -14,7 +14,7 @@ export class UsersRepository {
         return await this.dataServices.users.update(filter, update)
     }
 
-    async updateUserById(id, update): Promise<User> {
+    async updateUserById(id, update: Partial<User>): Promise<User> {
         return await this.dataServices.users.updateById(id, update)
     }
 
@@ -27,9 +27,5 @@ export class UsersRepository {
 
     async getUserById(id: string, options = undefined): Promise<User> {
         return this.dataServices.users.getById(id, options)
-    }
-
-    async saveUser(user: User): Promise<User> {
-        return this.dataServices.users.saveEntity(user)
     }
 }
